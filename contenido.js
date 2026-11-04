@@ -114,6 +114,14 @@ window.AAC = {
      precio null = "consultar". Lista vacía = catálogo en preparación. */
   merch: [],
 
+  /* ---------- Foto del público ----------
+     Va de fondo en "escríbenos": entra en blanco y negro y pasa a color
+     al hacer scroll. */
+  publico: {
+    src: "assets/img/publico", anchos: [640, 1600], w: 1600, h: 1066, foco: "50% 60%",
+    alt: "acordeacorde y su público al final de una función: todos con las manos en alto.",
+  },
+
   /* ---------- Archivo ----------
      tipo: "foto" | "cartel" | "video" | "documento"
      src: ruta base SIN tamaño ni extensión (herramientas/optimizar_fotos.py
@@ -123,6 +131,10 @@ window.AAC = {
   archivo: [
     { tipo: "foto", portada: true, foco: "50% 22%", src: "assets/img/voz-costura", anchos: [640, 1600], w: 1600, h: 2133,
       alt: "El vocalista canta con un pasamontañas mitad negro y mitad blanco unido por una costura roja en X." },
+    { tipo: "foto", portada: true, foco: "45% 40%", src: "assets/img/bajo-guitarra-rojo", anchos: [640, 1600], w: 1600, h: 1066,
+      alt: "Bajo y guitarra semihueca bajo luz roja, con el público en primer plano." },
+    { tipo: "foto", portada: true, foco: "50% 30%", src: "assets/img/voz-lata", anchos: [640, 1600], w: 1600, h: 1066,
+      alt: "La voz, con pasamontañas mitad negro y mitad blanco cosido en rojo, posa con una lata frente a la batería." },
     { tipo: "foto", portada: true, foco: "50% 28%", src: "assets/img/bajo-tejido", anchos: [640, 1600], w: 1600, h: 2133,
       alt: "El bajista toca con una máscara tejida negra con orillas blancas, bajo luz azul." },
     { tipo: "foto", portada: true, foco: "50% 34%", src: "assets/img/bateria-cuernos", anchos: [640, 1440], w: 1440, h: 1920,
@@ -133,6 +145,14 @@ window.AAC = {
       alt: "Saxofonista con pasamontañas blanco toca entre estelas de luz de colores." },
     { tipo: "foto", portada: true, foco: "50% 30%", src: "assets/img/lap-steel-piso", anchos: [640, 1600], w: 1600, h: 1063,
       alt: "El vocalista, sudado y en cuclillas, toca un lap steel en el piso rodeado de pedales." },
+    { tipo: "foto", portada: true, foco: "50% 30%", src: "assets/img/bateria-azul", anchos: [640, 1600], w: 1600, h: 1066,
+      alt: "Batería bajo luz azul: pasamontañas negro con cuernos y costura blanca." },
+    { tipo: "foto", portada: true, foco: "45% 35%", src: "assets/img/sax-contraluz", anchos: [640, 1600], w: 1600, h: 1066,
+      alt: "Saxofón a contraluz, en blanco y negro: una figura con pasamontañas se lleva la mano a la cara." },
+    { tipo: "foto", foco: "55% 40%", src: "assets/img/bateria-sombra", anchos: [640, 1600], w: 1600, h: 1066,
+      alt: "Batería entre sombras azules, vista a través del escenario." },
+    { tipo: "foto", foco: "50% 40%", src: "assets/img/contraluz-luces", anchos: [640, 1600], w: 1600, h: 1066,
+      alt: "Silueta a contraluz bajo las luces del escenario, en blanco y negro; abajo asoma el clavijero de una guitarra." },
     { tipo: "foto", src: "assets/img/bajo-extintor", anchos: [640, 1440], w: 1440, h: 1920,
       alt: "El bajista con máscara tejida de orejas largas toca junto a un extintor." },
     { tipo: "foto", src: "assets/img/guitarra-barrido", anchos: [640, 1600], w: 1600, h: 1063,

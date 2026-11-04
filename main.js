@@ -153,7 +153,7 @@
   const fila = (f) => {
     const d = new Date(f.fecha + "T12:00");
     const fecha = f.fechaTexto || `${String(d.getDate()).padStart(2, "0")} ${meses[d.getMonth()]} ${d.getFullYear()}`;
-    return `<li><span class="f">${esc(fecha)}</span><span class="l">${esc(f.lugar || f.ciudad || "")}${f.nota ? `<small>${esc(f.ciudad && f.lugar ? f.ciudad + " · " : "")}${esc(f.nota)}</small>` : ""}</span>${f.boletos ? boton(f.boletos, "Boletos") : "<span></span>"}</li>`;
+    return `<li><span class="f">${esc(fecha)}</span><span class="l"><b>${esc(f.lugar || f.ciudad || "")}</b>${f.nota ? `<small>${esc(f.ciudad && f.lugar ? f.ciudad + " · " : "")}${esc(f.nota)}</small>` : ""}</span>${f.boletos ? boton(f.boletos, "Boletos") : "<span></span>"}</li>`;
   };
   const funcs = (D.funciones || []).slice().sort((a, b) => a.fecha.localeCompare(b.fecha));
   const prox = funcs.filter((f) => new Date(f.fecha + "T23:59") >= hoy);
@@ -168,6 +168,25 @@
     ? `<div class="laminas">${merch.map((m) => `<figure class="lamina"><div class="lamina__img">${m.foto ? `<img src="${esc(m.foto)}" alt="${esc(m.nombre)}" loading="lazy">` : ""}</div><figcaption><h3>${esc(m.nombre)}</h3><p>${m.precio ? "$" + esc(m.precio) + " MXN" : "Consultar"}</p><a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch: " + m.nombre)}">Preguntar ↗</a></figcaption></figure>`).join("")}</div>`
     : `<div class="catalogo-vacio"><p>El catálogo se está imprimiendo. Mientras, lo que hay se vende en la mesa de cada función.</p>
        <div class="botones">${enlaces.instagram ? boton(enlaces.instagram, "Mensaje directo") : ""}<a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch — acordeacorde")}">Por correo ↗</a></div></div>`;
+
+  /* ============ PÚBLICO (fondo de "escríbenos") ============ */
+  // entra en blanco y negro y pasa a color conforme sube con el scroll
+  const pub = D.publico, pubBox = $("#publico");
+  if (pub && pubBox) {
+    pubBox.innerHTML = picture({ ...pub, alt: "" }, "100vw", 'loading="lazy"');
+    pubBox.style.setProperty("--foco", pub.foco || "50% 60%");
+    if (!reduce) {
+      let pubVisible = false, pubPend = false;
+      const pubPinta = () => {
+        pubPend = false;
+        const r = pubBox.getBoundingClientRect(), vh = innerHeight;
+        const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * .9 + r.height * .35)));
+        pubBox.style.setProperty("--p", p.toFixed(3));
+      };
+      new IntersectionObserver(([en]) => { pubVisible = en.isIntersecting; if (pubVisible) pubPinta(); }).observe(pubBox);
+      addEventListener("scroll", () => { if (pubVisible && !pubPend) { pubPend = true; requestAnimationFrame(pubPinta); } }, { passive: true });
+    }
+  }
 
   /* ============ CONTACTO ============ */
   const REDES = [["spotify", "Spotify"], ["instagram", "Instagram"], ["appleMusic", "Apple Music"], ["youtube", "YouTube"], ["bandcamp", "Bandcamp"], ["tiktok", "TikTok"], ["linktree", "Linktree"]];
@@ -198,6 +217,7 @@
   /* ============ TINTA QUE HIERVE ============ */
   // como animación hecha a mano: el contorno cambia unas 8 veces por segundo
   const turbFina = $("#tinta-fina feTurbulence");
+  const turbTitulos = $$("#tinta-m feTurbulence, #tinta-s feTurbulence");
   const turb = $("#tinta feTurbulence"), disp = $("#tinta feDisplacementMap"), blur = $("#tinta feGaussianBlur");
   const ajustaTinta = () => {
     const fs = parseFloat(getComputedStyle($(".nombre")).fontSize) || 300;
@@ -209,13 +229,15 @@
   ajustaTinta(); addEventListener("resize", ajustaTinta);
   let visibles = new Set();
   const vio = new IntersectionObserver((ents) => ents.forEach((en) => en.isIntersecting ? visibles.add(en.target) : visibles.delete(en.target)));
-  [$(".nombre"), $(".contacto__t")].forEach((el) => vio.observe(el));
+  $$(".nombre, .contacto__t, .sec-head__t, .lista, .agenda, .nuevo, .laminas").forEach((el) => vio.observe(el));
   let semilla = 0;
   if (!reduce) setInterval(() => {
-    if (!visibles.size && document.getElementById("intro").classList.contains("fuera")) return;
+    const extra = document.body.classList.contains("menu-abierto") || detalle.open;
+    if (document.hidden || (!visibles.size && !extra && document.getElementById("intro").classList.contains("fuera"))) return;
     semilla = (semilla + 1) % 4;
     turb.setAttribute("seed", [7, 23, 41, 58][semilla]);
     turbFina.setAttribute("seed", [7, 23, 41, 58][semilla]);
+    turbTitulos.forEach((t) => t.setAttribute("seed", [7, 23, 41, 58][semilla]));
   }, 125);
 
   /* ============ APARICIONES ============ */
