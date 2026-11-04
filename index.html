@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>acordeacorde — sitio oficial</title>
+  <meta name="description" content="acordeacorde: banda enmascarada de Monterrey, N.L. Noise rock, punk, post-punk, stoner, progresivo, teatro y poesía. Escucha La Idea y el nuevo sencillo “el pedo no son las drogas”.">
+  <meta name="theme-color" content="#0a0a0a">
+  <link rel="canonical" href="./">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="acordeacorde">
+  <meta property="og:title" content="acordeacorde — sitio oficial">
+  <meta property="og:description" content="Banda enmascarada de Monterrey, N.L. Nuevo sencillo: el pedo no son las drogas.">
+  <meta property="og:image" content="assets/brand/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="es_MX">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Coustard:wght@900&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/brand/logo-hueso.webp">
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"MusicGroup","name":"acordeacorde","foundingDate":"2024","foundingLocation":{"@type":"Place","name":"Monterrey, Nuevo León, México"},"genre":["Noise rock","Punk","Post-punk","Stoner","Rock progresivo","Experimental"],"email":"acordeacordemusic@gmail.com","sameAs":["https://open.spotify.com/artist/30RUl4HTPHJGzQqRHe2yyr","https://www.instagram.com/acorde_acorde/","https://linktr.ee/acordeacorde"],"album":[{"@type":"MusicAlbum","name":"La Idea","datePublished":"2025-11-14"}]}
+  </script>
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+
+  <!-- Filtro de tinta (lettering del logo). main.js lo hace "hervir". -->
+  <svg class="defs" width="0" height="0" aria-hidden="true" focusable="false">
+    <filter id="tinta" x="-5%" y="-10%" width="110%" height="120%" color-interpolation-filters="sRGB">
+      <feTurbulence type="fractalNoise" baseFrequency="0.012" numOctaves="2" seed="7" result="ruido"/>
+      <feDisplacementMap in="SourceGraphic" in2="ruido" scale="14" result="movido"/>
+      <feGaussianBlur in="movido" stdDeviation="4" result="corrido"/>
+      <feColorMatrix in="corrido" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 24 -11"/>
+    </filter>
+    <filter id="tinta-fina" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="7"/>
+      <feDisplacementMap in="SourceGraphic" scale="4"/>
+    </filter>
+  </svg>
+
+  <!-- ============ INTRO ============ -->
+  <div class="intro" id="intro" aria-hidden="true">
+    <img class="intro__logo" src="assets/brand/logo-hueso.webp" width="524" height="442" alt="">
+    <p class="intro__txt"><span>Monterrey, N.L.</span><span>desde 2024</span></p>
+    <button class="intro__saltar" id="introSaltar" tabindex="-1">Saltar</button>
+  </div>
+
+  <div class="grano" aria-hidden="true"></div>
+
+  <!-- ============ ENCABEZADO ============ -->
+  <header class="top" id="top">
+    <a class="top__logo" href="#inicio" aria-label="acordeacorde, inicio">
+      <img src="assets/brand/logo-hueso.webp" width="524" height="442" alt="">
+    </a>
+    <a class="top__escuchar" href="#musica"><span class="punto" aria-hidden="true"></span>Escuchar</a>
+    <button class="top__menu" id="menuBtn" aria-expanded="false" aria-controls="menu">
+      <span class="top__menu-txt">Menú</span><span class="top__menu-ic" aria-hidden="true"><i></i><i></i></span>
+    </button>
+  </header>
+
+  <nav class="menu" id="menu" aria-label="Secciones" hidden>
+    <ul>
+      <li><a href="#musica"><span>Música</span></a></li>
+      <li><a href="#en-vivo"><span>En vivo</span></a></li>
+      <li><a href="#merch"><span>Merch</span></a></li>
+      <li><a href="#contacto"><span>Contacto</span></a></li>
+    </ul>
+    <p class="menu__pie mono"><a id="menuCorreo" href="mailto:acordeacordemusic@gmail.com">acordeacordemusic@gmail.com</a></p>
+  </nav>
+
+  <main id="contenido">
+
+    <!-- ============ INICIO ============ -->
+    <section class="inicio" id="inicio" aria-labelledby="titulo">
+      <div class="inicio__foto" id="heroFotos" aria-hidden="true"><!-- main.js --></div>
+
+      <h1 class="nombre" id="titulo">
+        <span class="sr-only">acordeacorde</span>
+        <span class="nombre__l" aria-hidden="true">acorde.</span>
+        <span class="nombre__l nombre__l--2" aria-hidden="true">acorde</span>
+      </h1>
+
+      <div class="inicio__pie">
+        <p class="mono">Noise rock · punk · post-punk · stoner · progresivo · teatro · poesía</p>
+        <a class="nuevo" href="#musica" data-abre="0">
+          <span class="mono">Nuevo sencillo</span>
+          <b>el pedo no son las drogas</b>
+          <span class="nuevo__flecha" aria-hidden="true">→</span>
+        </a>
+      </div>
+      <span class="inicio__scroll mono" aria-hidden="true">Scroll</span>
+    </section>
+
+    <!-- ============ MANIFIESTO ============ -->
+    <section class="manifiesto" aria-label="Sobre la banda">
+      <p class="manifiesto__txt lineas">Cuatro máscaras de Monterrey. Ruido, teatro y poesía hasta que deja de tener nombre.</p>
+    </section>
+
+    <!-- ============ MÚSICA ============ -->
+    <section class="musica" id="musica" aria-labelledby="musicaT">
+      <header class="sec-head">
+        <h2 class="sec-head__t lineas" id="musicaT">Música</h2>
+        <a class="sec-head__link mono" id="spotifyArtista" href="https://open.spotify.com/artist/30RUl4HTPHJGzQqRHe2yyr" target="_blank" rel="noopener">Spotify ↗</a>
+      </header>
+      <ol class="lista" id="lanzamientos"><!-- main.js --></ol>
+    </section>
+
+    <!-- ============ EN VIVO ============ -->
+    <section class="vivo" id="en-vivo" aria-labelledby="vivoT">
+      <header class="sec-head">
+        <h2 class="sec-head__t lineas" id="vivoT">En vivo</h2>
+        <span class="sec-head__link mono" id="tiraCuenta" aria-hidden="true"></span>
+      </header>
+      <div class="tira" id="tira" tabindex="0" aria-label="Fotos en vivo. Usa las flechas para recorrerlas."><!-- main.js --></div>
+
+      <div class="agenda">
+        <h3 class="mono">Próximas funciones</h3>
+        <ul id="proximas"><!-- main.js --></ul>
+        <h3 class="mono">Ya pasó</h3>
+        <ul id="pasadas" class="agenda--pasadas"><!-- main.js --></ul>
+      </div>
+    </section>
+
+    <!-- ============ RUMORES (ficción declarada) ============ -->
+    <div class="rumor" role="note" aria-label="Rumores no verificados (ficción)">
+      <div class="rumor__pista">
+        <span><b>Rumor no verificado</b> acordeacorde es la peor banda que existe actualmente</span><i aria-hidden="true">✕</i>
+        <span><b>Rumor no verificado</b> uno de sus integrantes tiene prohibido entrar a Brasil</span><i aria-hidden="true">✕</i>
+        <span>“Hacen buena mierda” — Maderito</span><i aria-hidden="true">✕</i>
+        <span aria-hidden="true"><b>Rumor no verificado</b> acordeacorde es la peor banda que existe actualmente</span><i aria-hidden="true">✕</i>
+        <span aria-hidden="true"><b>Rumor no verificado</b> uno de sus integrantes tiene prohibido entrar a Brasil</span><i aria-hidden="true">✕</i>
+        <span aria-hidden="true">“Hacen buena mierda” — Maderito</span><i aria-hidden="true">✕</i>
+      </div>
+    </div>
+
+    <!-- ============ MERCH ============ -->
+    <section class="merch" id="merch" aria-labelledby="merchT">
+      <header class="sec-head">
+        <h2 class="sec-head__t lineas" id="merchT">Merch</h2>
+      </header>
+      <div id="catalogo"><!-- main.js --></div>
+    </section>
+
+    <!-- ============ CONTACTO ============ -->
+    <section class="contacto" id="contacto" aria-labelledby="contactoT">
+      <p class="mono contacto__k">Booking · prensa · organizadores</p>
+      <h2 class="contacto__t" id="contactoT"><a id="correoGrande" href="mailto:acordeacordemusic@gmail.com"><span class="lineas">Escríbenos</span></a></h2>
+      <p class="contacto__correo"><a id="correoTxt" href="mailto:acordeacordemusic@gmail.com">acordeacordemusic@gmail.com</a> <button class="copiar mono" id="copiar" type="button">Copiar</button></p>
+      <ul class="redes" id="redes"><!-- main.js --></ul>
+      <p class="mono contacto__rider">¿Organizas? <a id="riderLink" href="mailto:acordeacordemusic@gmail.com">Pide el rider técnico</a>.</p>
+    </section>
+  </main>
+
+  <footer class="pie">
+    <img src="assets/brand/logo-hueso.webp" width="524" height="442" alt="" loading="lazy">
+    <p class="mono">acordeacorde · Monterrey, N.L. · desde 2024</p>
+    <a class="mono" href="#inicio">Arriba ↑</a>
+  </footer>
+
+  <!-- Portada flotante (lista de música, escritorio) -->
+  <div class="flota" id="flota" aria-hidden="true"><img alt=""></div>
+
+  <!-- Detalle de lanzamiento -->
+  <dialog class="detalle" id="detalle" aria-labelledby="detalleT">
+    <button class="detalle__cerrar mono" id="detalleCerrar">Cerrar ✕</button>
+    <div class="detalle__in" id="detalleIn"><!-- main.js --></div>
+  </dialog>
+
+  <script src="contenido.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
