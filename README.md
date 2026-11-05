@@ -20,6 +20,13 @@ python3 herramientas/optimizar_fotos.py material/foto1.jpg material/foto2.jpg
 
 El script imprime líneas listas para pegar en `archivo` dentro de `contenido.js`. Todas aparecen en la tira de **En vivo**; las que lleven `portada: true` rotan en el inicio.
 
+La foto de fondo de "escríbenos" se cambia en `publico` dentro de `contenido.js`.
+
+## Tipografías
+
+- **Coustard 900** con el filtro de tinta: el nombre y todos los títulos y subtítulos.
+- **Rubik**: todo lo demás.
+
 ## Reproductores
 
 En Spotify: *Compartir → Insertar*. Copia la URL `https://open.spotify.com/embed/...` en `spotifyEmbed` del lanzamiento. El reproductor se carga al abrir el lanzamiento.
