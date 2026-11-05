@@ -30,7 +30,10 @@ window.AAC = {
      spotifyEmbed: URL de "Insertar" de Spotify (open.spotify.com/embed/...) o null
      spotifyAlto: 152 para sencillo, 352 para álbum
      bandcampEmbed: URL del reproductor de Bandcamp o null
-     youtube: ID del video (lo que va después de watch?v=) o null
+     youtube: ID del video (lo que va después de watch?v=) o null.
+       El lanzamiento más reciente con video aparece con reproductor en "Música".
+     youtubeTipo: "Visualizer oficial", "Video oficial"…
+     youtubePoster: miniatura local (sin extensión; -640.webp y .webp) para no cargar YouTube hasta dar play
      canciones: [["Nombre", "3:45"], ...] — vacío = tracklist pendiente */
   lanzamientos: [
     {
@@ -40,8 +43,9 @@ window.AAC = {
       portada: "assets/portadas/el-pedo-no-son-las-drogas.webp",
       portadaAlt: "Portada de el pedo no son las drogas: un pasamontañas tejido en blanco y negro de alto contraste.",
       spotifyEmbed: "https://open.spotify.com/embed/album/5OqBcJx1HcbrGkbej8yUD1", spotifyAlto: 152,
-      bandcampEmbed: null, youtube: null,
-      enlaces: { spotify: "https://open.spotify.com/album/5OqBcJx1HcbrGkbej8yUD1", appleMusic: null, youtube: null, bandcamp: null },
+      bandcampEmbed: null, youtube: "utgpNj8IBcg", youtubeTipo: "Visualizer oficial",
+      youtubePoster: "assets/video/visualizer-el-pedo",
+      enlaces: { spotify: "https://open.spotify.com/album/5OqBcJx1HcbrGkbej8yUD1", appleMusic: null, youtube: "https://www.youtube.com/watch?v=utgpNj8IBcg", bandcamp: null },
       canciones: [["el pedo no son las drogas", "5:40"]],
     },
     {
@@ -108,11 +112,11 @@ window.AAC = {
      post: link al post de Instagram con el flyer.
      estado: null | "cancelado" | "lluvia".  nota: línea corta opcional. */
   funciones: [
-    { fecha: "2025-07-18", lugar: "Katuaí", ciudad: null, nota: "Primera tocada.",
+    { fecha: "2025-07-18", lugar: "Katuaí", ciudad: "Monterrey, N.L.", nota: "Primera tocada.",
       post: "https://www.instagram.com/p/DMGwVSCvGlb/", boletos: null, cartel: "assets/carteles/2025-07-18-katuai.webp" },
-    { fecha: "2025-10-25", lugar: "Pesadilla Colectiva · A909 Studio", ciudad: null,
+    { fecha: "2025-10-25", lugar: "Pesadilla Colectiva · A909 Studio", ciudad: "Monterrey, N.L.",
       post: "https://www.instagram.com/p/DPzFnpUD_uV/", boletos: null, cartel: "assets/carteles/2025-10-25-pesadilla-colectiva.webp" },
-    { fecha: "2025-12-28", lugar: "Armonía y Aparato Fest", ciudad: null,
+    { fecha: "2025-12-28", lugar: "Armonía y Aparato Fest", ciudad: "Monterrey, N.L.",
       post: "https://www.instagram.com/p/DSnagqljzDX/", boletos: null, cartel: "assets/carteles/2025-12-28-armonia-y-aparato.webp" },
     { fecha: "2026-03-21", lugar: "Anexo 10 · Foro Barrio", ciudad: "Monterrey, N.L.",
       post: "https://www.instagram.com/p/DVq2JW8kVZc/", boletos: null, cartel: "assets/carteles/2026-03-21-anexo-10.webp" },

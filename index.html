@@ -121,6 +121,7 @@
         <a class="sec-head__link mono" id="spotifyArtista" href="https://open.spotify.com/artist/30RUl4HTPHJGzQqRHe2yyr" target="_blank" rel="noopener">Spotify ↗</a>
       </header>
       <ol class="lista" id="lanzamientos"><!-- main.js --></ol>
+      <div class="visual" id="visual" hidden><!-- main.js: reproductor de YouTube --></div>
     </section>
 
     <!-- ============ EN VIVO ============ -->
@@ -132,7 +133,10 @@
       <div class="video" id="video" hidden><!-- main.js --></div>
       <div class="tira" id="tira" tabindex="0" aria-label="Fotos en vivo. Usa las flechas para recorrerlas."><!-- main.js --></div>
 
-      <div class="agenda">
+      <div class="agenda" id="fechas">
+        <header class="sec-head agenda__titulo">
+          <h2 class="sec-head__t lineas" id="fechasT">Fechas</h2>
+        </header>
         <div class="agenda__head">
           <h3>próximas</h3>
           <span class="mono agenda__hint" aria-hidden="true">desliza →</span>

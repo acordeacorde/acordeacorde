@@ -297,7 +297,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .agenda { padding-top: clamp(56px, 8vw, 110px); }
 .agenda__head { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding: 0 var(--m); margin-bottom: 20px; }
 #pasadasHead { margin-top: clamp(48px, 6vw, 80px); }
-.agenda h3 { margin: 0; font-family: var(--logo); font-weight: 900; font-size: clamp(30px, 3.4vw, 52px); line-height: 1; letter-spacing: -.03em; filter: url(#tinta-s); }
+.agenda h3 { margin: 0; font-family: var(--logo); font-weight: 900; font-size: clamp(26px, 2.6vw, 40px); line-height: 1; letter-spacing: -.03em; filter: url(#tinta-s); }
 .agenda__hint { color: var(--gris); }
 .fechas {
   list-style: none; margin: 0; padding: 0 var(--m) 6px; display: flex; gap: clamp(16px, 2vw, 28px); align-items: flex-start;
@@ -542,4 +542,31 @@ html { -webkit-tap-highlight-color: transparent; }
   .paquete:hover .paquete__img img:last-child { transform: rotate(5deg); }
   .lamina:hover .lamina__img img, .fecha__flyer:not(:disabled):hover img, .tira figure:hover img { transform: none; }
   .fecha--vacia a:hover { background: none; color: inherit; }
+}
+
+/* ---------- FECHAS: título de sección ---------- */
+.agenda__titulo { margin-bottom: clamp(20px, 3vw, 40px); }
+
+/* ---------- VISUALIZER (YouTube) ---------- */
+.visual { margin: clamp(28px, 4vw, 56px) var(--m) 0; }
+.yt { position: relative; aspect-ratio: 16 / 9; background: var(--negro-2); overflow: hidden; }
+.yt__play { position: absolute; inset: 0; width: 100%; display: grid; place-items: center; cursor: pointer; }
+.yt__play img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .8s var(--out), filter .5s; filter: brightness(.82); }
+.yt__play .video__play { position: relative; z-index: 1; width: clamp(64px, 7vw, 92px); }
+.yt__play .video__play::after { border-width: 11px 0 11px 18px; }
+.yt__play:hover img { transform: scale(1.03); filter: brightness(1); }
+.yt__play:hover .video__play { transform: scale(1.1); }
+.yt iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.visual__pie { display: flex; align-items: baseline; justify-content: space-between; gap: 20px; padding-top: 14px; }
+.visual__pie p { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.visual__pie .mono { color: var(--gris); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+.visual__pie b { font-family: var(--logo); font-weight: 900; font-size: clamp(22px, 2.4vw, 34px); letter-spacing: -.02em; line-height: 1; }
+@media (max-width: 760px) {
+  .visual { margin-inline: 0; }
+  .visual__pie { padding-inline: var(--m); }
+  .agenda__titulo { margin-bottom: 16px; }
+}
+@media (hover: none) {
+  .yt__play:hover img { transform: none; filter: brightness(.82); }
+  .yt__play:active .video__play { transform: scale(.92); }
 }

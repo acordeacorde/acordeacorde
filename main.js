@@ -89,13 +89,25 @@
   const portada = encajan.length >= 3 ? encajan : todas;
   const heroFotos = $("#heroFotos");
   heroFotos.innerHTML = portada.map((p, i) =>
-    `<img src="${p.src}-640.webp" srcset="${srcset(p, "webp")}" sizes="100vw" alt="" style="object-position:${esc(p.foco || "50% 50%")}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join("");
+    `<img src="${p.src}-640.webp" srcset="${srcset(p, "webp")}" sizes="100vw" alt="" style="object-position:${esc(p.foco || "50% 50%")}" ${i ? 'decoding="async"' : 'fetchpriority="high"'}>`).join("");
   const heroImgs = $$("img", heroFotos);
   let hi = 0;
   const muestra = (i) => {
     heroImgs.forEach((im, k) => { im.classList.toggle("ve", k === i); });
     hi = i;
   };
+  // espera a que la foto esté descargada y decodificada antes de mostrarla
+  const lista = (im) => im.complete && im.naturalWidth ? (im.decode ? im.decode().catch(() => {}) : Promise.resolve())
+    : new Promise((ok) => { im.addEventListener("load", ok, { once: true }); im.addEventListener("error", ok, { once: true }); }).then(() => im.decode && im.decode().catch(() => {}));
+  let heroOcupado = false;
+  const siguiente = () => {
+    if (heroOcupado) return;
+    const n = (hi + 1) % heroImgs.length;
+    if (!(heroImgs[n].complete && heroImgs[n].naturalWidth)) return; // aún no llega: se queda la actual
+    heroOcupado = true;
+    lista(heroImgs[n]).then(() => { muestra(n); heroOcupado = false; });
+  };
+  heroImgs.forEach(lista);
 
   /* ============ MÚSICA ============ */
   const lanz = D.lanzamientos || [];
@@ -110,6 +122,29 @@
       <span class="lista__t">${esc(r.titulo || r.tipo)}</span>
       <span class="lista__m">${r.estado === "nuevo" ? "<b>Nuevo</b>" : r.estado === "debut" ? "<b>Álbum debut</b>" : ""}${esc(r.tipo)} · ${esc(r.fecha)}</span>
     </button></li>`).join("");
+
+  // reproductor de YouTube: miniatura local y el iframe solo al dar play
+  const yt = (r, auto) => `<div class="yt" data-yt="${esc(r.youtube)}">
+      <button type="button" class="yt__play" aria-label="Ver ${esc(r.youtubeTipo || "video")}: ${esc(r.titulo || "")}">
+        ${r.youtubePoster ? `<img src="${esc(r.youtubePoster)}-640.webp" srcset="${esc(r.youtubePoster)}-640.webp 640w, ${esc(r.youtubePoster)}.webp 1280w" sizes="(min-width: 900px) 60vw, 100vw" alt="" loading="lazy" width="1280" height="720">`
+          : `<img src="https://i.ytimg.com/vi/${esc(r.youtube)}/hqdefault.jpg" alt="" loading="lazy">`}
+        <span class="video__play" aria-hidden="true"></span>
+      </button>
+    </div>`;
+  const ponYt = (caja) => {
+    const id = caja.dataset.yt;
+    caja.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen title="Video de YouTube"></iframe>`;
+    caja.classList.add("yt--on");
+  };
+  document.addEventListener("click", (e) => { const b = e.target.closest(".yt__play"); if (b) ponYt(b.parentElement); });
+  const conVideo = lanz.find((r) => r.youtube);
+  const visual = $("#visual");
+  if (conVideo && visual) {
+    visual.hidden = false;
+    visual.innerHTML = `${yt(conVideo)}
+      <div class="visual__pie"><p><span class="mono">${esc(conVideo.youtubeTipo || "Video")}</span><b>${esc(conVideo.titulo || "")}</b></p>
+      ${enlaces.youtube ? `<a class="boton" href="${esc(enlaces.youtube)}" target="_blank" rel="noopener"><span>Canal</span><i aria-hidden="true">↗</i></a>` : ""}</div>`;
+  }
 
   // portada flotante que sigue al cursor (escritorio)
   const flota = $("#flota"), flotaImg = $("img", flota);
@@ -388,7 +423,7 @@
     setTimeout(() => {
       document.body.classList.add("listo");
       muestra(0);
-      if (!reduce && heroImgs.length > 1) setInterval(() => muestra((hi + 1) % heroImgs.length), 3800);
+      if (!reduce && heroImgs.length > 1) setInterval(siguiente, 3800);
     }, reduce ? 0 : 380);
   };
   const fuentes = document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve();
