@@ -191,8 +191,18 @@
 
   /* ============ MERCH ============ */
   const merch = D.merch || [];
+  const dm = enlaces.instagram ? `https://ig.me/m/${enlaces.instagram.split("/").filter(Boolean).pop()}` : null;
+  const stock = (m) => m.quedan === 0 ? `<b class="agotado">Agotado</b>` : m.quedan != null && m.quedan <= 3 ? `<b>Quedan ${m.quedan}</b>` : "";
   $("#catalogo").innerHTML = merch.length
-    ? `<div class="laminas">${merch.map((m) => `<figure class="lamina"><div class="lamina__img">${m.foto ? `<img src="${esc(m.foto)}" alt="${esc(m.nombre)}" loading="lazy">` : ""}</div><figcaption><h3>${esc(m.nombre)}</h3><p>${m.precio ? "$" + esc(m.precio) + " MXN" : "Consultar"}</p><a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch: " + m.nombre)}">Preguntar ↗</a></figcaption></figure>`).join("")}</div>`
+    ? `<ul class="laminas">${merch.map((m) => `<li class="lamina${m.quedan === 0 ? " lamina--agotada" : ""}">
+        <div class="lamina__img">${m.foto ? `<img src="${esc(m.foto)}" alt="${esc(m.alt || m.nombre)}" loading="lazy" width="600" height="600">` : ""}</div>
+        <h3>${esc(m.nombre)}</h3>
+        <p class="mono">${esc(m.variante || "")}${m.variante ? " · " : ""}${m.precio ? "$" + esc(m.precio) : "Consultar"} ${stock(m)}</p>
+      </li>`).join("")}</ul>
+      <div class="merch__pie">
+        ${(D.combos || []).length ? `<p class="mono">${D.combos.map(esc).join(" · ")}</p>` : ""}
+        <div class="botones">${boton(dm, "Apartar por DM", "boton--rojo")}<a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch — acordeacorde")}">Por correo ↗</a></div>
+      </div>`
     : `<div class="catalogo-vacio"><p>El catálogo se está imprimiendo. Mientras, lo que hay se vende en la mesa de cada función.</p>
        <div class="botones">${enlaces.instagram ? boton(enlaces.instagram, "Mensaje directo") : ""}<a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch — acordeacorde")}">Por correo ↗</a></div></div>`;
 

@@ -312,19 +312,28 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 @keyframes corre { to { transform: translateX(-50%); } }
 
 /* ---------- MERCH ---------- */
-.merch { padding: clamp(90px, 14vw, 200px) 0; }
+.merch { padding: clamp(80px, 10vw, 140px) 0; }
 .catalogo-vacio { padding: 0 var(--m); display: grid; grid-template-columns: 1fr auto; gap: 24px 60px; align-items: end; }
 .catalogo-vacio p { margin: 0; font-weight: 500; font-size: clamp(26px, 3.4vw, 52px); line-height: 1.08; max-width: 18em; }
 .catalogo-vacio .botones { margin: 0; }
 @media (max-width: 760px) { .catalogo-vacio { grid-template-columns: 1fr; } }
-.laminas { padding: 0 var(--m); display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2.4vw, 32px); }
-.lamina { margin: 0; }
-.lamina__img { aspect-ratio: 4 / 5; background: var(--negro-2); overflow: hidden; }
-.lamina__img img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--out); }
+.laminas { list-style: none; margin: 0; padding: 0 var(--m); display: grid; grid-template-columns: repeat(5, 1fr); gap: clamp(16px, 2vw, 28px) clamp(12px, 1.6vw, 24px); }
+.lamina__img { aspect-ratio: 1; background: var(--negro-2); overflow: hidden; }
+.lamina__img img { width: 100%; height: 100%; object-fit: cover; transition: transform .9s var(--out), filter .6s; }
 .lamina:hover .lamina__img img { transform: scale(1.04); }
-.lamina h3 { margin: 14px 0 4px; font-family: var(--logo); font-weight: 900; filter: url(#tinta-s); font-size: 26px; letter-spacing: -.02em; }
-.lamina p { margin: 0 0 12px; color: var(--gris); }
-@media (max-width: 760px) { .laminas { grid-template-columns: 1fr 1fr; } }
+.lamina h3 { margin: 12px 0 2px; font-family: var(--logo); font-weight: 900; filter: url(#tinta-s); font-size: clamp(20px, 1.8vw, 26px); line-height: 1.05; letter-spacing: -.02em; }
+.lamina p { margin: 0; color: var(--gris); }
+.lamina p b { color: var(--rojo); white-space: nowrap; }
+@media (max-width: 600px) { .lamina p b { display: block; margin-top: 2px; } }
+@media (min-width: 601px) { .lamina p b { margin-left: 4px; } }
+.lamina--agotada .lamina__img img { filter: grayscale(1) brightness(.45); }
+.lamina--agotada h3 { color: var(--gris); }
+.lamina p b.agotado { color: var(--hueso); }
+.merch__pie { padding: clamp(28px, 4vw, 48px) var(--m) 0; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 18px 32px; }
+.merch__pie p { margin: 0; color: var(--hueso); }
+.merch__pie .botones { margin: 0; }
+@media (max-width: 1000px) { .laminas { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 600px) { .laminas { grid-template-columns: 1fr 1fr; } }
 
 /* ---------- CONTACTO ---------- */
 .contacto {

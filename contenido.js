@@ -133,9 +133,24 @@ window.AAC = {
   ],
 
   /* ---------- Merch ----------
-     Cada pieza: { nombre, descripcion, foto, precio, disponible }
-     precio null = "consultar". Lista vacía = catálogo en preparación. */
-  merch: [],
+     Cada pieza: { nombre, variante, foto, alt, precio, quedan }
+     precio en MXN (null = "consultar").
+     quedan: número de piezas; 0 = agotado; null = no se muestra.
+     combos: líneas cortas que van debajo del catálogo.
+     Se aparta por DM de Instagram (o por correo). */
+  merch: [
+    { nombre: "Playera samurái", variante: "Blanca", foto: "assets/merch/playera-blanca-samurai.webp",
+      alt: "Playera blanca con el samurái de La Idea y el nombre de la banda.", precio: 250, quedan: 2 },
+    { nombre: "Playera logo", variante: "Blanca", foto: "assets/merch/playera-blanca-logo.webp",
+      alt: "Playera blanca con el logo de acordeacorde en negro.", precio: 250, quedan: 2 },
+    { nombre: "CD La Idea", variante: "Disco físico", foto: "assets/merch/cd-la-idea.webp",
+      alt: "CD de La Idea en su caja, con la portada del samurái.", precio: 250, quedan: 13 },
+    { nombre: "Playera logo", variante: "Negra", foto: "assets/merch/playera-negra-logo.webp",
+      alt: "Playera negra con el logo de acordeacorde en contorno blanco.", precio: 250, quedan: 0 },
+    { nombre: "Playera acordeacorde", variante: "Negra", foto: "assets/merch/playera-negra-nombre.webp",
+      alt: "Playera negra con el nombre acordeacorde en blanco.", precio: 250, quedan: 0 },
+  ],
+  combos: ["2 playeras: $400", "Playera + CD: $400"],
 
   /* ---------- Foto del público ----------
      Va de fondo en "escríbenos": entra en blanco y negro y pasa a color
