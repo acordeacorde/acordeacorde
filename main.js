@@ -147,6 +147,27 @@
     tira.scrollTo({ left: sig.offsetLeft - (tira.clientWidth - sig.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
   });
 
+  /* ============ VIDEO ============ */
+  // loop mudo que solo corre mientras se ve; el completo con sonido se abre aparte
+  const V = D.video, vBox = $("#video");
+  if (V && V.loop && vBox) {
+    const ahorro = navigator.connection && navigator.connection.saveData;
+    vBox.hidden = false;
+    vBox.innerHTML = `<video muted loop playsinline preload="none" poster="${esc(V.poster || "")}" aria-hidden="true"><source src="${esc(V.loop)}" type="video/mp4"></video>
+      ${V.completo ? `<button type="button" class="video__ver"><span class="video__play" aria-hidden="true"></span><span>Ver completo<small class="mono">${esc(V.duracion || "")} · con sonido</small></span></button>` : ""}`;
+    const vid = $("video", vBox);
+    if (!reduce && !ahorro) {
+      new IntersectionObserver(([en]) => { if (en.isIntersecting) vid.play().catch(() => {}); else vid.pause(); }, { threshold: .25 }).observe(vBox);
+    }
+    const ver = $(".video__ver", vBox);
+    if (ver) ver.addEventListener("click", () => {
+      vid.pause();
+      $("#detalleIn").innerHTML = `<div class="detalle__video"><video controls autoplay playsinline preload="auto" poster="${esc(V.poster || "")}"><source src="${esc(V.completo)}" type="video/mp4"></video></div>`;
+      if (typeof detalle.showModal === "function") { detalle.showModal(); document.body.classList.add("bloqueado"); }
+      else open(V.completo, "_blank");
+    });
+  }
+
   /* ============ AGENDA ============ */
   const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
   const meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];

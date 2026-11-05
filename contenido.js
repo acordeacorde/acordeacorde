@@ -152,6 +152,16 @@ window.AAC = {
   ],
   combos: ["2 playeras: $400", "Playera + CD: $400"],
 
+  /* ---------- Video ----------
+     loop: clip corto sin audio que se repite en "en vivo".
+     completo: el video entero con sonido; solo se descarga al abrirlo. */
+  video: {
+    loop: "assets/video/en-vivo-loop.mp4",
+    poster: "assets/video/en-vivo-poster.webp",
+    completo: "assets/video/en-vivo.mp4",
+    duracion: "2 min",
+  },
+
   /* ---------- Foto del público ----------
      Va de fondo en "escríbenos": entra en blanco y negro y pasa a color
      al hacer scroll. */
