@@ -116,15 +116,20 @@ window.AAC = {
       post: "https://www.instagram.com/p/DSnagqljzDX/", boletos: null, cartel: "assets/carteles/2025-12-28-armonia-y-aparato.webp" },
     { fecha: "2026-03-21", lugar: "Anexo 10 · Foro Barrio", ciudad: "Monterrey, N.L.",
       post: "https://www.instagram.com/p/DVq2JW8kVZc/", boletos: null, cartel: "assets/carteles/2026-03-21-anexo-10.webp" },
+    { fecha: "2026-05-22", lugar: "No Popular Club", ciudad: "Monterrey, N.L.", nota: "Abrimos para Segundos Auxilios.",
+      post: "https://www.instagram.com/p/DYfqk59R_-a/", boletos: null, cartel: "assets/carteles/2026-05-22-no-popular-club.webp" },
     { fecha: "2026-07-11", lugar: "Pre-fiesta Aquí No Hay Playa · Foro Nodriza", ciudad: "Monterrey, N.L.", nota: "Abrimos para UnPerro Andaluz.",
       post: "https://www.instagram.com/p/DZEAvEDMUDs/", boletos: null, cartel: "assets/carteles/2026-07-11-aqui-no-hay-playa.webp" },
+    { fecha: "2026-09-26", lugar: "Batalla de bandas · Casa del Músico", ciudad: "León, Gto.", estado: "cancelado",
+      post: "https://www.instagram.com/p/Db-GjqKye-s/", boletos: null, cartel: "assets/carteles/2026-09-26-batalla-de-bandas-leon.webp" },
+    { fecha: "2026-10-24", lugar: "Almas Cruzadas · Colectivo Regio", ciudad: "Monterrey, N.L.", estado: "lluvia",
+      post: "https://www.instagram.com/p/DeSKoL7xtti/", boletos: null, cartel: "assets/carteles/2026-10-24-almas-cruzadas.webp" },
     { fecha: "2026-11-06", lugar: "El Colectivo 818", ciudad: "Monterrey, N.L.", nota: "Con Ven y Mira.",
       post: "https://www.instagram.com/p/DeutHklD5ZR/", boletos: null, cartel: "assets/carteles/2026-11-06-el-colectivo-818.webp" },
     { fecha: "2026-11-21", fechaTexto: "21–22 nov 2026", lugar: "Congreso Nacional del Ruido · Aparato", ciudad: "Monterrey, N.L.",
       post: "https://www.instagram.com/p/DdUDv-lEWMQ/", boletos: "https://www.eventbrite.com.mx/e/congreso-nacional-del-ruido-2026-tickets-1999620626121", cartel: "assets/carteles/2026-11-21-cndr.webp" },
-    /* Pendientes de fecha (no se muestran hasta tenerla):
-       DU9jwYtiV6i · DYfqk59R_-a (abrimos para Segundos Auxilios)
-       Db-GjqKye-s (León, Gto., cancelado) · DeSKoL7xtti (no tocamos por lluvia) */
+    /* Pendiente de fecha (no se muestra hasta tenerla): post DU9jwYtiV6i,
+       entre dic 2025 y mar 2026. */
   ],
 
   /* ---------- Merch ----------
