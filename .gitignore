@@ -1,3 +1,4 @@
 capturas/
 *.png
 !assets/**/*.png
+tour-acordeacorde-*.mp4

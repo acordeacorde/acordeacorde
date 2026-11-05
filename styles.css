@@ -692,3 +692,4 @@ html { -webkit-tap-highlight-color: transparent; }
 .fecha__flyer img.ve { opacity: 1; }
 .fecha__n b { font-weight: inherit; }
 .pila__hint b { color: var(--hueso); font-weight: inherit; }
+.detalle:focus, .detalle:focus-visible { outline: none; }
