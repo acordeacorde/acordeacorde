@@ -132,10 +132,11 @@
       <div class="tira" id="tira" tabindex="0" aria-label="Fotos en vivo. Usa las flechas para recorrerlas."><!-- main.js --></div>
 
       <div class="agenda">
-        <h3>próximas funciones</h3>
-        <ul class="shows" id="proximas"><!-- main.js --></ul>
-        <h3 id="pasadasT">ya pasó</h3>
-        <ul class="shows shows--pasadas" id="pasadas"><!-- main.js --></ul>
+        <div class="agenda__head">
+          <h3>fechas</h3>
+          <span class="mono agenda__hint" aria-hidden="true">arrastra →</span>
+        </div>
+        <ol class="fechas" id="fechas" tabindex="0" aria-label="Fechas: primero las próximas, luego las pasadas. Usa las flechas para recorrerlas."><!-- main.js --></ol>
       </div>
     </section>
 

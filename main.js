@@ -89,7 +89,7 @@
 
   // detalle
   const detalle = $("#detalle");
-  const boton = (url, txt, cls = "") => url ? `<a class="boton ${cls}" href="${esc(url)}" target="_blank" rel="noopener">${esc(txt)} ↗</a>` : "";
+  const boton = (url, txt, cls = "") => url ? `<a class="boton ${cls}" href="${esc(url)}" target="_blank" rel="noopener"><span>${esc(txt)}</span><i aria-hidden="true">↗</i></a>` : "";
   const abrir = (i) => {
     const r = lanz[i]; if (!r) return;
     const e = r.enlaces || {};
@@ -100,7 +100,7 @@
         <h2 id="detalleT">${esc(r.titulo || r.tipo)}</h2>
         ${r.canciones && r.canciones.length ? `<ol class="pistas">${r.canciones.map(([n, t]) => `<li><span>${esc(n)}</span><span>${esc(t)}</span></li>`).join("")}</ol>` : ""}
         ${r.spotifyEmbed ? `<div class="reproductor"><iframe src="${esc(r.spotifyEmbed)}?theme=0" height="${r.spotifyAlto || 152}" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Reproductor de Spotify: ${esc(r.titulo || "")}"></iframe></div>` : ""}
-        <div class="botones">${boton(e.spotify, "Spotify", "boton--rojo")}${boton(e.appleMusic, "Apple Music")}${boton(e.youtube, "YouTube")}${boton(e.bandcamp, "Bandcamp")}</div>
+        <div class="botones">${boton(e.spotify, "Spotify", "")}${boton(e.appleMusic, "Apple Music")}${boton(e.youtube, "YouTube")}${boton(e.bandcamp, "Bandcamp")}</div>
       </div>`;
     if (typeof detalle.showModal === "function") { detalle.showModal(); document.body.classList.add("bloqueado"); }
     else location.hash = "#musica";
@@ -156,34 +156,60 @@
     return f.fechaTexto || `${String(d.getDate()).padStart(2, "0")} ${meses[d.getMonth()]} ${d.getFullYear()}`;
   };
   const ESTADO = { cancelado: "Cancelado", lluvia: "Suspendido por lluvia" };
-  const lugarDe = (f) => [f.lugar, f.ciudad].filter(Boolean).join(" · ");
   const funcs = (D.funciones || []).slice().sort((a, b) => a.fecha.localeCompare(b.fecha));
-  const show = (f) => `<li class="show">
-      <button type="button" class="show__flyer" data-f="${funcs.indexOf(f)}" ${f.cartel ? `aria-label="Ver flyer: ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
-        ${f.cartel ? `<img src="${esc(f.cartel)}" alt="" loading="lazy">` : `<span>${esc(fechaDe(f))}</span>`}
+  const esProx = (f) => new Date(f.fecha + "T23:59") >= hoy;
+  const prox = funcs.filter(esProx);
+  const pas = funcs.filter((f) => !esProx(f)).reverse();
+  const diaMes = (f) => {
+    if (f.fechaTexto) return [f.fechaTexto.replace(/\s*\d{4}$/, ""), (f.fechaTexto.match(/\d{4}$/) || [""])[0]];
+    const d = new Date(f.fecha + "T12:00");
+    return [`${String(d.getDate()).padStart(2, "0")} ${meses[d.getMonth()]}`, String(d.getFullYear())];
+  };
+  const tarjeta = (f) => {
+    const [dm, an] = diaMes(f);
+    const tag = esProx(f) ? `<b class="tag tag--lleno">Próxima</b>` : ESTADO[f.estado] ? `<b class="tag">${ESTADO[f.estado]}</b>` : "";
+    return `<li class="fecha${f.estado ? " fecha--" + esc(f.estado) : ""}">
+      <button type="button" class="fecha__flyer" data-f="${funcs.indexOf(f)}" ${f.cartel ? `aria-label="Ver flyer del ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
+        ${f.cartel ? `<img src="${esc(f.cartel)}" alt="" loading="lazy" draggable="false">` : ""}
       </button>
-      <p class="show__f mono">${esc(fechaDe(f))}${ESTADO[f.estado] ? ` <b>${ESTADO[f.estado]}</b>` : ""}</p>
-      <p class="show__l">${esc(lugarDe(f))}</p>
-      ${f.nota ? `<p class="show__n">${esc(f.nota)}</p>` : ""}
-      ${f.boletos || f.post ? `<p class="show__a">${f.boletos ? boton(f.boletos, "Boletos", "boton--rojo") : ""}${f.post ? `<a class="show__post mono" href="${esc(f.post)}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}</p>` : ""}
+      <p class="fecha__d"><span>${esc(dm)}</span> <small class="mono">${esc(an)}</small>${tag}</p>
+      <p class="fecha__l">${esc(f.lugar || f.ciudad || "")}</p>
+      ${f.lugar && f.ciudad ? `<p class="fecha__c">${esc(f.ciudad)}</p>` : ""}
+      ${f.nota ? `<p class="fecha__c">${esc(f.nota)}</p>` : ""}
+      ${f.boletos || f.post ? `<div class="botones">${boton(f.boletos, "Boletos")}${boton(f.post, "Instagram")}</div>` : ""}
     </li>`;
-  const prox = funcs.filter((f) => new Date(f.fecha + "T23:59") >= hoy);
-  const pas = funcs.filter((f) => new Date(f.fecha + "T23:59") < hoy).reverse();
-  $("#proximas").innerHTML = prox.length ? prox.map(show).join("") :
-    `<li class="shows__vacio"><a href="mailto:${esc(correo)}?subject=${encodeURIComponent("Función — acordeacorde")}">Sin fechas por ahora. ¿Tienes foro? <u>Escríbenos</u></a></li>`;
-  $("#pasadas").innerHTML = pas.map(show).join("");
-  if (!pas.length) { $("#pasadasT").hidden = true; $("#pasadas").hidden = true; }
+  };
+  const sinProx = `<li class="fecha fecha--vacia"><a href="mailto:${esc(correo)}?subject=${encodeURIComponent("Función — acordeacorde")}"><span>sin fechas próximas</span><small class="mono">¿Tienes foro? Escríbenos ↗</small></a></li>`;
+  const fechasEl = $("#fechas");
+  fechasEl.innerHTML = (prox.length ? prox.map(tarjeta).join("") : sinProx) +
+    (pas.length ? `<li class="fecha-sep" aria-hidden="true"><span>ya pasó</span></li>` + pas.map(tarjeta).join("") : "");
+  // arrastrar con mouse sin abrir el flyer al soltar
+  let arrF = null, movioF = false;
+  fechasEl.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") return; arrF = { x: e.clientX, s: fechasEl.scrollLeft }; movioF = false; });
+  addEventListener("pointermove", (e) => {
+    if (!arrF) return;
+    const dx = e.clientX - arrF.x;
+    if (Math.abs(dx) > 4) { movioF = true; fechasEl.classList.add("arrastra"); }
+    fechasEl.scrollLeft = arrF.s - dx;
+  });
+  addEventListener("pointerup", () => { if (arrF) { fechasEl.classList.remove("arrastra"); arrF = null; } });
+  fechasEl.addEventListener("click", (e) => { if (movioF) { e.preventDefault(); e.stopPropagation(); movioF = false; } }, true);
+  fechasEl.addEventListener("keydown", (e) => {
+    const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!k) return;
+    e.preventDefault();
+    fechasEl.scrollBy({ left: k * (fechasEl.querySelector(".fecha").offsetWidth + 24), behavior: reduce ? "auto" : "smooth" });
+  });
   // flyer en grande
-  $(".agenda").addEventListener("click", (e) => {
-    const b = e.target.closest(".show__flyer"); if (!b || b.disabled) return;
+  fechasEl.addEventListener("click", (e) => {
+    const b = e.target.closest(".fecha__flyer"); if (!b || b.disabled) return;
     const f = funcs[+b.dataset.f]; if (!f || !f.cartel) return;
     $("#detalleIn").innerHTML = `
       <div class="detalle__flyer"><img src="${esc(f.cartel)}" alt="Flyer de la función del ${esc(fechaDe(f))}${f.lugar ? " en " + esc(f.lugar) : ""}."></div>
       <div>
-        <p class="mono">${esc(fechaDe(f))}</p>
+        <p class="mono">${esc(fechaDe(f))}${ESTADO[f.estado] ? " · " + ESTADO[f.estado] : ""}</p>
         <h2 id="detalleT">${esc(f.lugar || f.ciudad || "")}</h2>
         ${f.lugar && f.ciudad ? `<p class="mono">${esc(f.ciudad)}</p>` : ""}
-        <div class="botones">${boton(f.boletos, "Boletos", "boton--rojo")}${boton(f.post, "Instagram")}</div>
+        <div class="botones">${boton(f.boletos, "Boletos")}${boton(f.post, "Instagram")}</div>
       </div>`;
     if (typeof detalle.showModal === "function") { detalle.showModal(); document.body.classList.add("bloqueado"); detalle.scrollTop = 0; }
     else open(f.cartel, "_blank");
@@ -201,10 +227,10 @@
       </li>`).join("")}</ul>
       <div class="merch__pie">
         ${(D.combos || []).length ? `<p class="mono">${D.combos.map(esc).join(" · ")}</p>` : ""}
-        <div class="botones">${boton(dm, "Apartar por DM", "boton--rojo")}<a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch — acordeacorde")}">Por correo ↗</a></div>
+        <div class="botones">${boton(dm, "Apartar por DM", "")}<a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch — acordeacorde")}"><span>Por correo</span><i aria-hidden="true">↗</i></a></div>
       </div>`
     : `<div class="catalogo-vacio"><p>El catálogo se está imprimiendo. Mientras, lo que hay se vende en la mesa de cada función.</p>
-       <div class="botones">${enlaces.instagram ? boton(enlaces.instagram, "Mensaje directo") : ""}<a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch — acordeacorde")}">Por correo ↗</a></div></div>`;
+       <div class="botones">${enlaces.instagram ? boton(enlaces.instagram, "Mensaje directo") : ""}<a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch — acordeacorde")}"><span>Por correo</span><i aria-hidden="true">↗</i></a></div></div>`;
 
   /* ============ PÚBLICO (fondo de "escríbenos") ============ */
   // entra en blanco y negro y pasa a color conforme sube con el scroll
