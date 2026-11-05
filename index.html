@@ -12,18 +12,21 @@
   <meta property="og:site_name" content="acordeacorde">
   <meta property="og:title" content="acordeacorde — sitio oficial">
   <meta property="og:description" content="Banda enmascarada de Monterrey, N.L. Nuevo sencillo: el pedo no son las drogas.">
-  <meta property="og:image" content="assets/brand/og.jpg">
+  <meta property="og:url" content="https://acordeacorde.github.io/acordeacorde/">
+  <meta property="og:image" content="https://acordeacorde.github.io/acordeacorde/assets/brand/og-negro.jpg">
+  <meta property="og:image:alt" content="Logo de acordeacorde sobre fondo negro.">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:locale" content="es_MX">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://acordeacorde.github.io/acordeacorde/assets/brand/og-negro.jpg">
 
   <link rel="icon" href="assets/brand/favicon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="assets/brand/apple-touch-icon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Coustard:wght@900&family=Rubik:wght@400..800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Coustard:wght@900&family=Rubik:wght@400..800&family=VT323&display=swap" rel="stylesheet">
   <link rel="preload" as="image" href="assets/brand/logo-hueso.webp">
   <link rel="stylesheet" href="styles.css">
   <script>document.documentElement.classList.add("js")</script>
@@ -97,6 +100,7 @@
     <!-- ============ INICIO ============ -->
     <section class="inicio" id="inicio" aria-labelledby="titulo">
       <div class="inicio__foto" id="heroFotos" aria-hidden="true"><!-- main.js --></div>
+      <div class="inicio__yt" id="heroYt" aria-hidden="true"></div>
 
       <h1 class="nombre" id="titulo">
         <span class="sr-only">acordeacorde</span>
@@ -105,6 +109,11 @@
       </h1>
 
       <div class="inicio__pie">
+        <button type="button" class="sonido" id="sonido" hidden aria-pressed="false">
+          <span class="sonido__barras" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span class="sonido__t">Subir volumen</span>
+          <small class="mono">Visualizer oficial</small>
+        </button>
         <a class="nuevo" href="#musica" data-abre="0">
           <span class="mono">Nuevo sencillo</span>
           <b>el pedo no son las drogas</b>
@@ -121,17 +130,16 @@
         <a class="sec-head__link mono" id="spotifyArtista" href="https://open.spotify.com/artist/30RUl4HTPHJGzQqRHe2yyr" target="_blank" rel="noopener">Spotify ↗</a>
       </header>
       <ol class="lista" id="lanzamientos"><!-- main.js --></ol>
-      <div class="visual" id="visual" hidden><!-- main.js: reproductor de YouTube --></div>
     </section>
 
     <!-- ============ EN VIVO ============ -->
     <section class="vivo" id="en-vivo" aria-labelledby="vivoT">
       <header class="sec-head">
         <h2 class="sec-head__t lineas" id="vivoT">En vivo</h2>
-        <span class="sec-head__link mono" id="tiraCuenta" aria-hidden="true"></span>
       </header>
       <div class="video" id="video" hidden><!-- main.js --></div>
-      <div class="tira" id="tira" tabindex="0" aria-label="Fotos en vivo. Usa las flechas para recorrerlas."><!-- main.js --></div>
+      <div class="pila" id="tira" tabindex="0" role="group" aria-roledescription="pila de fotos" aria-label="Fotos en vivo. Toca o arrastra la de arriba para pasar a la siguiente; también con las flechas."><!-- main.js --></div>
+      <p class="pila__hint mono" aria-hidden="true"><b id="tiraCuenta"></b> · arrastra o toca la foto</p>
 
       <div class="agenda" id="fechas">
         <header class="sec-head agenda__titulo">

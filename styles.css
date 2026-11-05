@@ -574,3 +574,121 @@ html { -webkit-tap-highlight-color: transparent; }
 /* varios flyers en una fecha */
 .fecha__n { position: absolute; z-index: 2; right: 10px; top: 10px; padding: 5px 8px; border-radius: 99px; font-size: 10px; letter-spacing: .1em;
   background: rgba(10,10,10,.72); color: var(--hueso); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }
+
+/* =====================================================================
+   PORTADA CON VISUALIZER (YouTube de fondo, sin sonido hasta que lo pidan)
+   ===================================================================== */
+.inicio__yt { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; opacity: 0; transition: opacity 1.6s var(--ease); }
+.inicio__yt.ve { opacity: 1; }
+.inicio__yt iframe {
+  position: absolute; left: 50%; top: 50%; border: 0;
+  width: max(100vw, 177.78svh); height: max(56.25vw, 100svh);
+  transform: translate(-50%, -50%) scale(1.06);           /* recorta los bordes y la marca de YouTube */
+  filter: contrast(1.08) brightness(.7);
+}
+.inicio__yt::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(to bottom, rgba(10,10,10,.55) 0%, rgba(10,10,10,0) 24%, rgba(10,10,10,0) 60%, rgba(10,10,10,.8) 100%);
+}
+.sonido {
+  display: grid; grid-template-columns: auto auto; align-items: center; gap: 2px 14px; text-align: left; margin-right: auto;
+  color: var(--hueso); padding: 10px 18px 10px 12px; border: 1px solid var(--linea); border-radius: 99px;
+  background: rgba(10,10,10,.45); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  transition: background .4s, color .4s, border-color .4s; animation: aparece .8s var(--out);
+}
+@keyframes aparece { from { opacity: 0; transform: translateY(12px); } }
+.sonido__barras { grid-row: 1 / span 2; display: flex; align-items: flex-end; gap: 3px; height: 22px; width: 26px; }
+.sonido__barras i { flex: 1; background: currentColor; height: 30%; border-radius: 1px; transition: height .3s; }
+.sonido.on .sonido__barras i { animation: barra .9s ease-in-out infinite alternate; }
+.sonido.on .sonido__barras i:nth-child(2) { animation-delay: -.3s; } .sonido.on .sonido__barras i:nth-child(3) { animation-delay: -.6s; } .sonido.on .sonido__barras i:nth-child(4) { animation-delay: -.15s; }
+@keyframes barra { from { height: 20%; } to { height: 100%; } }
+.sonido__t { font-family: var(--logo); font-weight: 900; font-size: 18px; line-height: 1; letter-spacing: -.01em; }
+.sonido small { font-size: 10px; letter-spacing: .14em; color: var(--gris); }
+.sonido:hover, .sonido.on { background: var(--hueso); color: var(--negro); border-color: var(--hueso); }
+.sonido.on small, .sonido:hover small { color: rgba(10,10,10,.6); }
+.con-yt .inicio__foto img { opacity: 0; transition: opacity 1.6s; }
+.inicio__pie { justify-content: space-between; }
+@media (max-width: 760px) {
+  .inicio__pie { gap: 18px; }
+  .sonido { margin-right: 0; padding: 12px 20px 12px 14px; }
+}
+
+/* =====================================================================
+   VIDEO CASERO: cámara VHS que crece al bajar
+   ===================================================================== */
+.video { --p: 0; aspect-ratio: auto; background: none; overflow: visible; margin: 0 0 clamp(36px, 5vw, 72px); height: min(86vh, 56.25vw + 40px); display: grid; place-items: center; }
+.video__marco {
+  position: relative; overflow: hidden; background: #000;
+  width: calc(100% - (1 - var(--p)) * 2 * max(var(--m), 14vw)); height: calc(100% - (1 - var(--p)) * 22%);
+  border-radius: calc((1 - var(--p)) * 28px);
+  transform: rotate(calc((1 - var(--p)) * -2deg));
+  will-change: width, height;
+}
+.video__marco video { width: 100%; height: 100%; object-fit: cover; display: block; filter: saturate(.85) contrast(1.08); }
+.video__marco::before {                                    /* líneas de barrido */
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; mix-blend-mode: multiply; opacity: .5;
+  background: repeating-linear-gradient(to bottom, rgba(0,0,0,0) 0 2px, rgba(0,0,0,.55) 2px 3px);
+}
+.video__marco::after {                                     /* viñeta */
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: radial-gradient(ellipse at center, rgba(0,0,0,0) 55%, rgba(0,0,0,.55) 100%);
+}
+.vhs { position: absolute; inset: 0; z-index: 2; pointer-events: none; color: #f4f1ea; font-family: "VT323", ui-monospace, "Courier New", monospace;
+  font-size: clamp(16px, 1.9vw, 30px); letter-spacing: .06em; text-shadow: 2px 0 rgba(255,0,60,.55), -2px 0 rgba(0,200,255,.55); }
+.vhs > span { position: absolute; }
+.vhs__rec { left: 4.5%; top: 6%; display: flex; align-items: center; gap: .4em; }
+.vhs__rec i { width: .6em; height: .6em; border-radius: 50%; background: #f4f1ea; animation: parpadea 1.1s steps(1) infinite; }
+@keyframes parpadea { 50% { opacity: 0; } }
+.vhs__modo { right: 4.5%; top: 6%; }
+.vhs__play { left: 4.5%; bottom: 7%; }
+.vhs__tc { right: 4.5%; bottom: 7%; font-variant-numeric: tabular-nums; }
+.vhs__bat { right: 4.5%; top: 14%; width: 1.6em; height: .75em; border: 2px solid currentColor; }
+.vhs__bat i { position: absolute; inset: 2px 30% 2px 2px; background: currentColor; }
+.vhs__bat::after { content: ""; position: absolute; right: -6px; top: 25%; width: 3px; height: 50%; background: currentColor; }
+.video__ver { left: 50%; top: 50%; bottom: auto; transform: translate(-50%, -50%); flex-direction: column; text-align: center; z-index: 3; gap: 12px; }
+.video__ver > span:last-child { font-size: clamp(20px, 2vw, 30px); }
+.video__marco { cursor: pointer; }
+@media (max-width: 760px) {
+  .video { height: 72svh; aspect-ratio: auto; margin-inline: 0; }
+  .video__marco { width: calc(100% - (1 - var(--p)) * 2 * 22px); height: calc(100% - (1 - var(--p)) * 14%); }
+  .vhs { font-size: 17px; }
+  .vhs__play { bottom: 6%; } .vhs__tc { bottom: 6%; }
+  .video__ver { left: 50%; bottom: auto; }
+}
+
+/* =====================================================================
+   PILA DE FOTOS IMPRESAS
+   ===================================================================== */
+.pila {
+  --alto: min(64vh, 560px);
+  position: relative; height: calc(var(--alto) + 70px); margin: 0 var(--m); touch-action: pan-y; outline-offset: 6px;
+  user-select: none; -webkit-user-select: none;
+}
+.pila figure {
+  position: absolute; left: 50%; top: 50%; margin: 0;
+  width: min(86vw, calc(var(--alto) * var(--ar))); aspect-ratio: var(--ar); max-height: var(--alto);
+  padding: clamp(6px, .8vw, 12px) clamp(6px, .8vw, 12px) clamp(26px, 3vw, 44px);
+  background: var(--hueso); box-shadow: 0 18px 40px rgba(0,0,0,.55), 0 2px 6px rgba(0,0,0,.4);
+  transform: translate(calc(-50% + var(--ox)), calc(-50% + var(--oy))) rotate(var(--r));
+  transition: transform .6s var(--out), filter .5s; cursor: grab; box-sizing: content-box;
+}
+.pila figure:not(.arriba):not(.asoma) { visibility: hidden; }
+.pila figure.asoma { filter: brightness(.55); }
+.pila figure.arriba { transform: translate(-50%, -50%) rotate(calc(var(--r) * .3)); }
+.pila figure.toma { transition: none; cursor: grabbing; }
+.pila figure.vuela { transition: transform .5s cubic-bezier(.3, .7, .3, 1); }
+.pila picture, .pila img { display: block; width: 100%; height: 100%; }
+.pila img { object-fit: cover; pointer-events: none; -webkit-user-drag: none; filter: grayscale(.15) contrast(1.05); }
+.pila__hint { text-align: center; color: var(--gris); font-size: 11px; letter-spacing: .14em; margin: 4px 0 0; }
+@media (hover: hover) { .pila figure.arriba:hover { transform: translate(-50%, -52%) rotate(0deg); } }
+@media (max-width: 760px) {
+  .pila { --alto: 58svh; margin: 0 14px; }
+  .pila figure { width: min(80vw, calc(var(--alto) * var(--ar))); }
+}
+
+/* flyers que se turnan */
+.fecha__flyer img.otro, .fecha__flyer img:not(.ve) { opacity: 0; }
+.fecha__flyer img { position: absolute; inset: 0; transition: opacity .9s var(--ease), transform 1.2s var(--out); }
+.fecha__flyer img.ve { opacity: 1; }
+.fecha__n b { font-weight: inherit; }
+.pila__hint b { color: var(--hueso); font-weight: inherit; }

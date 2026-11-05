@@ -137,13 +137,46 @@
     caja.classList.add("yt--on");
   };
   document.addEventListener("click", (e) => { const b = e.target.closest(".yt__play"); if (b) ponYt(b.parentElement); });
+  /* ---- visualizer de fondo en la portada: arranca solo (sin sonido) y se le sube con un toque ---- */
   const conVideo = lanz.find((r) => r.youtube);
-  const visual = $("#visual");
-  if (conVideo && visual) {
-    visual.hidden = false;
-    visual.innerHTML = `${yt(conVideo)}
-      <div class="visual__pie"><p><span class="mono">${esc(conVideo.youtubeTipo || "Video")}</span><b>${esc(conVideo.titulo || "")}</b></p>
-      ${enlaces.youtube ? `<a class="boton" href="${esc(enlaces.youtube)}" target="_blank" rel="noopener"><span>Canal</span><i aria-hidden="true">↗</i></a>` : ""}</div>`;
+  const heroYt = $("#heroYt"), sonido = $("#sonido");
+  const ahorroDatos = navigator.connection && navigator.connection.saveData;
+  if (conVideo && heroYt && !reduce && !ahorroDatos) {
+    let yp = null, listoYt = false, conSonido = false;
+    const id = conVideo.youtube;
+    const prende = () => { if (listoYt) return; listoYt = true; heroYt.classList.add("ve"); document.body.classList.add("con-yt"); sonido.hidden = false; };
+    const crea = () => {
+      const div = document.createElement("div"); heroYt.appendChild(div);
+      yp = new YT.Player(div, {
+        host: "https://www.youtube-nocookie.com", videoId: id,
+        playerVars: { autoplay: 1, mute: 1, controls: 0, loop: 1, playlist: id, playsinline: 1, rel: 0, modestbranding: 1, disablekb: 1, iv_load_policy: 3, fs: 0, enablejsapi: 1, origin: location.origin },
+        events: {
+          onReady: (e) => {
+            e.target.mute(); e.target.playVideo(); sonido.hidden = false;
+            // por si el evento de "reproduciendo" no llega, se revisa el estado
+            const revisa = setInterval(() => { try { if (yp.getPlayerState() === 1) { prende(); clearInterval(revisa); } } catch (_) {} }, 400);
+            setTimeout(() => clearInterval(revisa), 20000);
+          },
+          onStateChange: (e) => { if (e.data === 1) prende(); },
+        },
+      });
+    };
+    window.onYouTubeIframeAPIReady = crea;
+    const s = document.createElement("script"); s.src = "https://www.youtube.com/iframe_api"; s.async = true; document.head.appendChild(s);
+    sonido.addEventListener("click", () => {
+      if (!yp) return;
+      conSonido = !conSonido;
+      if (conSonido) { yp.seekTo(0, true); yp.unMute(); yp.setVolume(100); yp.playVideo(); setTimeout(() => { try { if (yp.getPlayerState() === 1) prende(); } catch (_) {} }, 900); }
+      else yp.mute();
+      sonido.setAttribute("aria-pressed", conSonido);
+      sonido.classList.toggle("on", conSonido);
+      $(".sonido__t", sonido).textContent = conSonido ? "Silenciar" : "Subir volumen";
+    });
+    // fuera de la portada se pausa (salvo que lo estén escuchando)
+    new IntersectionObserver(([en]) => {
+      if (!yp || !listoYt) return;
+      if (en.isIntersecting) yp.playVideo(); else if (!conSonido) yp.pauseVideo();
+    }, { threshold: .1 }).observe($("#inicio"));
   }
 
   // portada flotante que sigue al cursor (escritorio)
@@ -188,20 +221,64 @@
   if (enlaces.spotify) $("#spotifyArtista").href = enlaces.spotify;
 
   /* ============ EN VIVO: tira ============ */
+  // pila de fotos impresas: la de arriba se avienta con el dedo o el mouse y se va al fondo
   const tira = $("#tira");
-  tira.innerHTML = fotos.map((p, i) => `<figure data-i="${i}">${picture(p, "(min-width: 700px) 50vw, 84vw", `loading="lazy" draggable="false" style="object-position:${esc(p.foco || "50% 50%")}"`)}</figure>`).join("");
+  const giro = (i) => ((i * 37) % 11) - 5;                 // inclinaciones "a mano", siempre las mismas
+  const corre = (i) => [((i * 53) % 9) - 4, ((i * 29) % 7) - 3];
+  tira.innerHTML = fotos.map((p, i) => {
+    const r = p.w / p.h, [ox, oy] = corre(i);
+    return `<figure data-i="${i}" style="--r:${giro(i)}deg;--ox:${ox * 4}px;--oy:${oy * 4}px;--ar:${r.toFixed(4)}">
+      ${picture(p, "(min-width: 700px) 60vw, 86vw", `${i < 3 ? "" : 'loading="lazy" '}draggable="false" style="object-position:${esc(p.foco || "50% 50%")}"`)}</figure>`;
+  }).join("");
   const figs = $$("figure", tira);
   const cuenta = $("#tiraCuenta");
-  const marcaActiva = () => {
-    const c = tira.scrollLeft + tira.clientWidth / 2;
-    let mejor = 0, dist = Infinity;
-    figs.forEach((f, i) => { const d = Math.abs(f.offsetLeft + f.offsetWidth / 2 - c); if (d < dist) { dist = d; mejor = i; } });
-    figs.forEach((f, i) => f.classList.toggle("activa", i === mejor));
-    cuenta.textContent = `${String(mejor + 1).padStart(2, "0")} / ${String(figs.length).padStart(2, "0")}`;
+  let orden = figs.map((_, i) => i);                       // orden[0] = la de arriba
+  const acomoda = () => {
+    orden.forEach((fi, k) => { const f = figs[fi]; f.style.zIndex = figs.length - k; f.classList.toggle("arriba", k === 0); f.classList.toggle("asoma", k > 0 && k < 4); f.setAttribute("aria-hidden", k ? "true" : "false"); });
+    cuenta.textContent = `${String(orden[0] + 1).padStart(2, "0")} / ${String(figs.length).padStart(2, "0")}`;
   };
-  tira.addEventListener("scroll", () => requestAnimationFrame(marcaActiva), { passive: true });
-  marcaActiva();
-  carrusel(tira, "figure");
+  const avienta = (dir = 1, dx = 0, dy = 0) => {
+    const f = figs[orden[0]];
+    const w = tira.clientWidth;
+    f.classList.add("vuela");
+    f.style.transform = `translate(calc(-50% + ${dir * w * .75}px), calc(-50% + ${dy * .5 - 40}px)) rotate(${dir * 28}deg)`;
+    setTimeout(() => {
+      orden.push(orden.shift()); acomoda();
+      f.style.transform = "";
+      setTimeout(() => f.classList.remove("vuela"), reduce ? 0 : 520);
+    }, reduce ? 0 : 260);
+  };
+  const regresa = () => {                                   // la de hasta abajo vuelve arriba
+    orden.unshift(orden.pop()); acomoda();
+  };
+  // arrastre con dedo o mouse
+  let tomo = null;
+  tira.addEventListener("pointerdown", (e) => {
+    const f = e.target.closest("figure.arriba"); if (!f || (e.pointerType === "mouse" && e.button !== 0)) return;
+    tomo = { f, x: e.clientX, y: e.clientY, dx: 0, dy: 0, t: performance.now(), mueve: false };
+  });
+  tira.addEventListener("pointermove", (e) => {
+    if (!tomo) return;
+    tomo.dx = e.clientX - tomo.x; tomo.dy = e.clientY - tomo.y;
+    if (!tomo.mueve && Math.abs(tomo.dx) > 8 && Math.abs(tomo.dx) > Math.abs(tomo.dy)) { tomo.mueve = true; tomo.f.setPointerCapture(e.pointerId); tomo.f.classList.add("toma"); }
+    if (tomo.mueve) tomo.f.style.transform = `translate(calc(-50% + ${tomo.dx}px), calc(-50% + ${tomo.dy * .35}px)) rotate(${tomo.dx / 14}deg)`;
+  });
+  const suelta = () => {
+    if (!tomo) return;
+    const { f, dx, dy, mueve, t } = tomo; tomo = null;
+    f.classList.remove("toma");
+    const vel = Math.abs(dx) / Math.max(1, performance.now() - t);
+    if (!mueve) { avienta(1); return; }                     // un toque = siguiente
+    if (Math.abs(dx) > 90 || vel > .6) avienta(Math.sign(dx) || 1, dx, dy);
+    else f.style.transform = "";
+  };
+  tira.addEventListener("pointerup", suelta);
+  tira.addEventListener("pointercancel", () => { if (tomo) { tomo.f.classList.remove("toma"); tomo.f.style.transform = ""; tomo = null; } });
+  tira.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight" || e.key === "Enter" || e.key === " ") { e.preventDefault(); avienta(1); }
+    if (e.key === "ArrowLeft") { e.preventDefault(); regresa(); }
+  });
+  acomoda();
 
   /* ============ VIDEO ============ */
   // loop mudo que solo corre mientras se ve; el completo con sonido se abre aparte
@@ -209,9 +286,32 @@
   if (V && V.loop && vBox) {
     const ahorro = navigator.connection && navigator.connection.saveData;
     vBox.hidden = false;
-    vBox.innerHTML = `<video muted loop playsinline preload="none" poster="${esc(V.poster || "")}" aria-hidden="true"><source src="${esc(V.loop)}" type="video/mp4"></video>
-      ${V.completo ? `<button type="button" class="video__ver"><span class="video__play" aria-hidden="true"></span><span>Ver completo<small class="mono">${esc(V.duracion || "")} · con sonido</small></span></button>` : ""}`;
+    vBox.innerHTML = `<div class="video__marco">
+        <video muted loop playsinline preload="none" poster="${esc(V.poster || "")}" aria-hidden="true"><source src="${esc(V.loop)}" type="video/mp4"></video>
+        <div class="vhs" aria-hidden="true">
+          <span class="vhs__rec"><i></i>REC</span><span class="vhs__modo">SP</span>
+          <span class="vhs__play">PLAY ▶</span><span class="vhs__tc" id="vhsTc">00:00:00</span>
+          <span class="vhs__bat"><i></i></span>
+        </div>
+        ${V.completo ? `<button type="button" class="video__ver"><span class="video__play" aria-hidden="true"></span><span>Ver completo<small class="mono">${esc(V.duracion || "")} · con sonido</small></span></button>` : ""}
+      </div>`;
     const vid = $("video", vBox);
+    // código de tiempo de cámara
+    const tc = $("#vhsTc");
+    vid.addEventListener("timeupdate", () => {
+      const s = vid.currentTime, h = (n) => String(Math.floor(n)).padStart(2, "0");
+      tc.textContent = `${h(s / 60)}:${h(s % 60)}:${h((s % 1) * 30)}`;
+    });
+    // al bajar, la tele crece hasta llenar la pantalla
+    if (!reduce) {
+      const crece = () => {
+        const r = vBox.getBoundingClientRect(), vh = innerHeight;
+        const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * .85)));
+        vBox.style.setProperty("--p", p.toFixed(3));
+      };
+      addEventListener("scroll", () => requestAnimationFrame(crece), { passive: true });
+      addEventListener("resize", crece); crece();
+    } else vBox.style.setProperty("--p", 1);
     if (!reduce && !ahorro) {
       new IntersectionObserver(([en]) => { if (en.isIntersecting) vid.play().catch(() => {}); else vid.pause(); }, { threshold: .25 }).observe(vBox);
     }
@@ -222,6 +322,8 @@
       if (typeof detalle.showModal === "function") { detalle.showModal(); document.body.classList.add("bloqueado"); }
       else open(V.completo, "_blank");
     });
+    // toda la tele es botón
+    if (ver) $(".video__marco", vBox).addEventListener("click", (e) => { if (!e.target.closest(".video__ver")) ver.click(); });
   }
 
   /* ============ AGENDA ============ */
@@ -249,8 +351,8 @@
     const tag = esProx(f) ? `<b class="tag tag--lleno">Próxima</b>` : ESTADO[f.estado] ? `<b class="tag">${ESTADO[f.estado]}</b>` : "";
     return `<li class="fecha${f.estado ? " fecha--" + esc(f.estado) : ""}">
       <button type="button" class="fecha__flyer" data-f="${funcs.indexOf(f)}"${fl ? ` style="--img:url('${esc(fl)}')"` : ""} ${fl ? `aria-label="Ver ${n > 1 ? n + " flyers" : "flyer"} del ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
-        ${fl ? `<img src="${esc(fl)}" alt="" loading="lazy" draggable="false">` : ""}
-        ${n > 1 ? `<span class="fecha__n mono" aria-hidden="true">1/${n}</span>` : ""}
+        ${flyers(f).map((src, k) => `<img src="${esc(src)}" alt="" loading="lazy" draggable="false"${k ? ' class="otro"' : ' class="ve"'}>`).join("")}
+        ${n > 1 ? `<span class="fecha__n mono" aria-hidden="true"><b>1</b>/${n}</span>` : ""}
       </button>
       <p class="fecha__d"><span>${esc(dm)}</span> <small class="mono">${esc(an)}</small>${tag}</p>
       <p class="fecha__l">${esc(f.lugar || f.ciudad || "")}</p>
@@ -265,6 +367,17 @@
   fechasPas.innerHTML = pas.map(tarjeta).join("");
   if (!pas.length) { fechasPas.hidden = true; $("#pasadasHead").hidden = true; }
   [fechasProx, fechasPas].forEach((el) => carrusel(el, ".fecha"));
+  // fechas con varios flyers: se turnan solos mientras se ven
+  const dobles = $$(".fecha__flyer").filter((b) => $$("img", b).length > 1);
+  const turna = (b) => {
+    const ims = $$("img", b), k = ims.findIndex((im) => im.classList.contains("ve")), n = (k + 1) % ims.length;
+    ims.forEach((im, j) => im.classList.toggle("ve", j === n));
+    const c = $(".fecha__n b", b); if (c) c.textContent = n + 1;
+  };
+  const vistos = new Set();
+  const ojoF = new IntersectionObserver((ents) => ents.forEach((en) => en.isIntersecting ? vistos.add(en.target) : vistos.delete(en.target)), { threshold: .4 });
+  dobles.forEach((b) => ojoF.observe(b));
+  if (!reduce) setInterval(() => vistos.forEach(turna), 2600);
   // flyer en grande
   $(".agenda").addEventListener("click", (e) => {
     const b = e.target.closest(".fecha__flyer"); if (!b || b.disabled) return;
