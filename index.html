@@ -176,6 +176,14 @@
     </section>
   </main>
 
+  <!-- Barra inferior (solo celular): navegación al alcance del pulgar -->
+  <nav class="barra" id="barra" aria-label="Secciones">
+    <a href="#musica" data-s="musica"><span>música</span></a>
+    <a href="#en-vivo" data-s="en-vivo"><span>en vivo</span></a>
+    <a href="#merch" data-s="merch"><span>merch</span></a>
+    <a href="#contacto" data-s="contacto"><span>contacto</span></a>
+  </nav>
+
   <footer class="pie">
     <img src="assets/brand/logo-hueso.webp" width="524" height="442" alt="" loading="lazy">
     <p class="mono">acordeacorde · Monterrey, N.L. · desde 2024</p>
@@ -187,6 +195,7 @@
 
   <!-- Detalle de lanzamiento -->
   <dialog class="detalle" id="detalle" aria-labelledby="detalleT">
+    <div class="detalle__asa" id="detalleAsa" aria-hidden="true"><i></i></div>
     <button class="detalle__cerrar mono" id="detalleCerrar">Cerrar ✕</button>
     <div class="detalle__in" id="detalleIn"><!-- main.js --></div>
   </dialog>

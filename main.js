@@ -288,6 +288,40 @@
     setTimeout(() => { e.target.textContent = "Copiar"; }, 1800);
   });
 
+  /* ============ CELULAR: barra inferior, hoja deslizable, merch en carrusel ============ */
+  const movil = matchMedia("(max-width: 760px)");
+  // sección activa en la barra
+  const barra = $("#barra");
+  const marcaBarra = (id) => $$("a", barra).forEach((a) => a.classList.toggle("activa", a.dataset.s === id));
+  const spy = new IntersectionObserver((ents) => ents.forEach((en) => { if (en.isIntersecting) marcaBarra(en.target.id); }), { rootMargin: "-45% 0px -50% 0px" });
+  ["inicio", "musica", "en-vivo", "merch", "contacto"].forEach((id) => { const el = document.getElementById(id); if (el) spy.observe(el); });
+  // la barra aparece al salir de la portada
+  new IntersectionObserver(([en]) => document.body.classList.toggle("en-portada", en.isIntersecting), { threshold: .35 }).observe($("#inicio"));
+  // diálogo como hoja: se cierra deslizando hacia abajo
+  let hoja = null;
+  const asa = $("#detalleAsa");
+  detalle.addEventListener("touchstart", (e) => {
+    if (!movil.matches) return;
+    const desdeAsa = e.target.closest("#detalleAsa, .detalle__cerrar");
+    if (!desdeAsa && detalle.scrollTop > 0) return;
+    hoja = { y: e.touches[0].clientY, dy: 0 };
+  }, { passive: true });
+  detalle.addEventListener("touchmove", (e) => {
+    if (!hoja) return;
+    hoja.dy = Math.max(0, e.touches[0].clientY - hoja.y);
+    if (hoja.dy > 0) { detalle.style.transition = "none"; detalle.style.transform = `translateY(${hoja.dy}px)`; }
+  }, { passive: true });
+  detalle.addEventListener("touchend", () => {
+    if (!hoja) return;
+    detalle.style.transition = ""; detalle.style.transform = "";
+    if (hoja.dy > 110) cerrar();
+    hoja = null;
+  });
+  if (asa) asa.addEventListener("click", cerrar);
+  // merch: carrusel con el dedo en el cel
+  const laminas = $(".laminas");
+  if (laminas) carrusel(laminas, ".lamina");
+
   /* ============ MENÚ ============ */
   const menu = $("#menu"), menuBtn = $("#menuBtn");
   const setMenu = (si) => {

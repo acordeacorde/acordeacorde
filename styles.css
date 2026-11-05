@@ -432,3 +432,114 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
   .rumor__pista { animation: none; flex-wrap: wrap; width: auto; padding: 0 var(--m); }
   .rumor span[aria-hidden], .rumor i { display: none; }
 }
+
+/* =====================================================================
+   CELULAR — pensado para el dedo
+   ===================================================================== */
+html { -webkit-tap-highlight-color: transparent; }
+.barra { display: none; }
+
+@media (max-width: 760px) {
+  body { font-size: 16px; }
+
+  /* encabezado: solo el logo arriba y se va con el scroll; la navegación vive abajo */
+  .top { position: absolute; mix-blend-mode: normal; padding: 14px var(--m); }
+  .top__escuchar, .top__menu { display: none; }
+  .menu { display: none !important; }
+
+  .barra {
+    display: grid; grid-template-columns: repeat(4, 1fr); position: fixed; z-index: 70; left: 10px; right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom)); height: 58px; border-radius: 16px;
+    background: rgba(20, 20, 20, .82); -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+    border: 1px solid var(--linea); box-shadow: 0 10px 30px rgba(0,0,0,.5);
+    transition: transform .5s var(--out), opacity .4s;
+  }
+  .en-portada .barra { transform: translateY(140%); opacity: 0; }
+  .barra a { display: grid; place-items: center; position: relative; color: var(--gris); font-family: var(--logo); font-weight: 900; font-size: 15px; letter-spacing: -.01em; }
+  .barra a::before { content: ""; position: absolute; top: 9px; width: 4px; height: 4px; border-radius: 50%; background: var(--hueso); opacity: 0; transform: scale(0); transition: transform .4s var(--out), opacity .3s; }
+  .barra a.activa { color: var(--hueso); }
+  .barra a.activa::before { opacity: 1; transform: none; }
+  .barra a:active span { transform: scale(.92); }
+  .barra span { display: inline-block; transition: transform .2s; }
+  .pie { padding-bottom: calc(96px + env(safe-area-inset-bottom)); flex-wrap: wrap; }
+  html { scroll-padding-top: 20px; }
+
+  /* toques más grandes */
+  .boton { padding: 14px .1em 12px; font-size: 12.5px; }
+  .botones { gap: 4px 24px; }
+  .copiar { padding: 12px 4px; }
+
+  /* secciones más compactas */
+  .sec-head { margin-bottom: 20px; }
+  .musica, .vivo { padding-bottom: 72px; }
+  .lista button { padding-block: 16px; min-height: 76px; }
+  .lista button:active::before { transform: scaleY(1); }
+  .lista button:active > * { color: var(--negro); }
+
+  /* carruseles: se sienten como apps (snap firme) */
+  .tira, .fechas, .laminas { scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .tira figure { height: 58vh; max-width: 82vw; }
+  .fecha { width: 76vw; }
+  .agenda__hint { display: none; }
+  .fecha__flyer:active img { transform: scale(.98); }
+
+  /* video */
+  .video { margin-inline: 0; aspect-ratio: 4 / 5; }
+  .video__ver { left: 16px; bottom: 16px; }
+
+  /* merch en carrusel */
+  .laminas { display: flex; overflow-x: auto; gap: 14px; padding: 0 var(--m) 6px; scroll-padding-inline: var(--m); scrollbar-width: none; }
+  .laminas::-webkit-scrollbar { display: none; }
+  .lamina { flex: none; width: 62vw; scroll-snap-align: start; }
+  .lamina p b { display: inline; margin-left: 6px; }
+  .paquetes ul { grid-template-columns: 1fr; gap: 10px; }
+  .paquete { grid-template-columns: 76px 1fr auto; gap: 14px; padding: 14px; }
+  .paquete__img { width: 76px; height: 68px; }
+  .paquete__img img { width: 50px; height: 50px; }
+  .paquete h4 { font-size: 20px; white-space: nowrap; }
+  .paquete__p { font-size: 22px; }
+  .paquete:active { border-color: var(--hueso); }
+  .merch__pie { justify-content: stretch; }
+  .merch__pie .botones { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .merch__pie .boton { justify-content: center; border: 1px solid var(--linea); background: none; padding: 16px 8px; }
+  .merch__pie .boton:first-child { background: var(--hueso); color: var(--negro); border-color: var(--hueso); }
+
+  /* contacto: correo y redes como filas grandes */
+  .contacto__correo { font-size: 17px; margin: 16px 0 28px; }
+  .redes { flex-direction: column; gap: 0; border-top: 1px solid var(--linea); }
+  .redes li { border-bottom: 1px solid var(--linea); }
+  .redes .boton { width: 100%; justify-content: space-between; padding: 18px 2px; font-size: 13px; background: none; }
+  .redes .boton:active { color: var(--gris); }
+  .contacto__rider { margin-top: 28px; }
+
+  /* diálogo como hoja que sube desde abajo */
+  .detalle { top: auto; bottom: 0; height: 92svh; max-height: 92svh; border-radius: 20px 20px 0 0; transition: transform .35s var(--out); }
+  .detalle[open] { animation: hojaSube .55s var(--out); }
+  @keyframes hojaSube { from { transform: translateY(100%); } to { transform: none; } }
+  .detalle__asa { position: sticky; top: 0; z-index: 3; height: 26px; display: grid; place-items: center; background: var(--negro); }
+  .detalle__asa i { width: 44px; height: 5px; border-radius: 3px; background: var(--linea); }
+  .detalle__cerrar { position: absolute; top: 0; right: 0; padding: 16px var(--m); z-index: 4; }
+  .detalle__in { padding-top: 14px; gap: 18px; }
+  .detalle__portada { max-width: none; display: grid; grid-template-columns: 112px 1fr; }
+  .detalle__portada img { width: 112px; }
+  .detalle h2 { font-size: 40px; }
+}
+.detalle__asa { display: none; }
+@media (max-width: 760px) { .detalle__asa { display: grid; } }
+
+/* en pantallas táctiles, sin hovers "pegados": la respuesta es al tocar */
+@media (hover: none) {
+  .boton:hover { background-size: 100% 1.5px; color: inherit; padding-inline: .05em; }
+  .boton:hover i { transform: none; }
+  .boton:active { background-size: 100% 100%; color: var(--negro); }
+  .lista button:hover::before { transform: scaleY(0); }
+  .lista button:hover > * { color: inherit; }
+  .lista button:hover .lista__t { transform: none; }
+  .lista button:hover .lista__m b { color: var(--hueso); }
+  .contacto__t a:hover { color: inherit; }
+  .paquete:hover { border-color: var(--linea); }
+  .paquete:hover .paquete__img img:first-child { transform: rotate(-6deg); }
+  .paquete:hover .paquete__img img:last-child { transform: rotate(5deg); }
+  .lamina:hover .lamina__img img, .fecha__flyer:not(:disabled):hover img, .tira figure:hover img { transform: none; }
+  .fecha--vacia a:hover { background: none; color: inherit; }
+}
