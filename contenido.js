@@ -12,8 +12,8 @@ window.AAC = {
      aparece como "enlace pendiente" y no lleva a ningún lado. */
   enlaces: {
     spotify:    "https://open.spotify.com/artist/30RUl4HTPHJGzQqRHe2yyr",
-    appleMusic: null,
-    youtube:    null,
+    appleMusic: "https://music.apple.com/mx/artist/acordeacorde/1810382098",
+    youtube:    "https://www.youtube.com/@acorde_acorde",
     bandcamp:   null,
     tiktok:     null,
     instagram:  "https://www.instagram.com/acorde_acorde/",
