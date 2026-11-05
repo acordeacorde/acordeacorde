@@ -134,10 +134,14 @@
 
       <div class="agenda">
         <div class="agenda__head">
-          <h3>fechas</h3>
-          <span class="mono agenda__hint" aria-hidden="true">arrastra →</span>
+          <h3>próximas</h3>
+          <span class="mono agenda__hint" aria-hidden="true">desliza →</span>
         </div>
-        <ol class="fechas" id="fechas" tabindex="0" aria-label="Fechas: primero las próximas, luego las pasadas. Usa las flechas para recorrerlas."><!-- main.js --></ol>
+        <ol class="fechas" id="fechasProx" tabindex="0" aria-label="Próximas fechas. Usa las flechas para recorrerlas."><!-- main.js --></ol>
+        <div class="agenda__head" id="pasadasHead">
+          <h3>ya pasó</h3>
+        </div>
+        <ol class="fechas fechas--pasadas" id="fechasPas" tabindex="0" aria-label="Fechas pasadas. Usa las flechas para recorrerlas."><!-- main.js --></ol>
       </div>
     </section>
 

@@ -18,6 +18,39 @@
     </picture>`;
   const fotos = (D.archivo || []).filter((p) => p.tipo === "foto");
 
+  /* ============ CARRUSEL: arrastre, rueda del mouse y flechas ============ */
+  const carrusel = (el, item) => {
+    let arr = null, movio = false;
+    el.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") return; arr = { x: e.clientX, s: el.scrollLeft }; movio = false; });
+    addEventListener("pointermove", (e) => {
+      if (!arr) return;
+      const dx = e.clientX - arr.x;
+      if (Math.abs(dx) > 4) { movio = true; el.classList.add("arrastra"); }
+      el.scrollLeft = arr.s - dx;
+    });
+    addEventListener("pointerup", () => { if (arr) { el.classList.remove("arrastra"); arr = null; } });
+    el.addEventListener("click", (e) => { if (movio) { e.preventDefault(); e.stopPropagation(); movio = false; } }, true);
+    // la ruedita mueve el carrusel de lado; en las orillas deja seguir la página
+    el.addEventListener("wheel", (e) => {
+      if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+      const max = el.scrollWidth - el.clientWidth;
+      if (max <= 0) return;
+      const d = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaY;
+      if ((d < 0 && el.scrollLeft <= 0) || (d > 0 && el.scrollLeft >= max - 1)) return;
+      e.preventDefault();
+      el.classList.add("rueda");
+      el.scrollLeft += d;
+      clearTimeout(el._rueda);
+      el._rueda = setTimeout(() => el.classList.remove("rueda"), 260);
+    }, { passive: false });
+    el.addEventListener("keydown", (e) => {
+      const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!k) return;
+      e.preventDefault();
+      const it = el.querySelector(item);
+      el.scrollBy({ left: k * ((it ? it.offsetWidth : 300) + 24), behavior: reduce ? "auto" : "smooth" });
+    });
+  };
+
   /* ============ NOMBRE: letras sueltas ============ */
   const giros = [-4, 2, -2, 3, -3, 4, 0, 3, -2];
   const alturas = [.02, -.03, .03, -.02, .04, -.01, .02, .03, -.04];
@@ -49,10 +82,14 @@
   const partirTodo = () => lineas.forEach(partirLineas);
 
   /* ============ FOTOS DEL INICIO ============ */
-  const portada = fotos.filter((p) => p.portada);
+  // a pantalla completa: horizontales en pantallas anchas, verticales en el cel
+  const todas = fotos.filter((p) => p.portada);
+  const vertical = matchMedia("(orientation: portrait)").matches;
+  const encajan = todas.filter((p) => vertical ? p.h > p.w : p.w >= p.h);
+  const portada = encajan.length >= 3 ? encajan : todas;
   const heroFotos = $("#heroFotos");
   heroFotos.innerHTML = portada.map((p, i) =>
-    `<img src="${p.src}-640.webp" srcset="${srcset(p, "webp")}" sizes="(min-width: 760px) 42vw, 74vw" alt="" style="object-position:${esc(p.foco || "50% 50%")}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join("");
+    `<img src="${p.src}-640.webp" srcset="${srcset(p, "webp")}" sizes="100vw" alt="" style="object-position:${esc(p.foco || "50% 50%")}" ${i ? 'loading="lazy"' : 'fetchpriority="high"'}>`).join("");
   const heroImgs = $$("img", heroFotos);
   let hi = 0;
   const muestra = (i) => {
@@ -129,23 +166,7 @@
   };
   tira.addEventListener("scroll", () => requestAnimationFrame(marcaActiva), { passive: true });
   marcaActiva();
-  // arrastrar con mouse
-  let arr = null;
-  tira.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") return; arr = { x: e.clientX, s: tira.scrollLeft, movio: false }; });
-  addEventListener("pointermove", (e) => {
-    if (!arr) return;
-    const dx = e.clientX - arr.x;
-    if (Math.abs(dx) > 4) { arr.movio = true; tira.classList.add("arrastra"); }
-    tira.scrollLeft = arr.s - dx;
-  });
-  addEventListener("pointerup", () => { if (arr) { tira.classList.remove("arrastra"); arr = null; } });
-  tira.addEventListener("keydown", (e) => {
-    const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!k) return;
-    e.preventDefault();
-    const act = figs.findIndex((f) => f.classList.contains("activa"));
-    const sig = figs[Math.max(0, Math.min(figs.length - 1, act + k))];
-    tira.scrollTo({ left: sig.offsetLeft - (tira.clientWidth - sig.offsetWidth) / 2, behavior: reduce ? "auto" : "smooth" });
-  });
+  carrusel(tira, "figure");
 
   /* ============ VIDEO ============ */
   // loop mudo que solo corre mientras se ve; el completo con sonido se abre aparte
@@ -190,7 +211,7 @@
     const [dm, an] = diaMes(f);
     const tag = esProx(f) ? `<b class="tag tag--lleno">Próxima</b>` : ESTADO[f.estado] ? `<b class="tag">${ESTADO[f.estado]}</b>` : "";
     return `<li class="fecha${f.estado ? " fecha--" + esc(f.estado) : ""}">
-      <button type="button" class="fecha__flyer" data-f="${funcs.indexOf(f)}" ${f.cartel ? `aria-label="Ver flyer del ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
+      <button type="button" class="fecha__flyer" data-f="${funcs.indexOf(f)}"${f.cartel ? ` style="--img:url('${esc(f.cartel)}')"` : ""} ${f.cartel ? `aria-label="Ver flyer del ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
         ${f.cartel ? `<img src="${esc(f.cartel)}" alt="" loading="lazy" draggable="false">` : ""}
       </button>
       <p class="fecha__d"><span>${esc(dm)}</span> <small class="mono">${esc(an)}</small>${tag}</p>
@@ -201,27 +222,13 @@
     </li>`;
   };
   const sinProx = `<li class="fecha fecha--vacia"><a href="mailto:${esc(correo)}?subject=${encodeURIComponent("Función — acordeacorde")}"><span>sin fechas próximas</span><small class="mono">¿Tienes foro? Escríbenos ↗</small></a></li>`;
-  const fechasEl = $("#fechas");
-  fechasEl.innerHTML = (prox.length ? prox.map(tarjeta).join("") : sinProx) +
-    (pas.length ? `<li class="fecha-sep" aria-hidden="true"><span>ya pasó</span></li>` + pas.map(tarjeta).join("") : "");
-  // arrastrar con mouse sin abrir el flyer al soltar
-  let arrF = null, movioF = false;
-  fechasEl.addEventListener("pointerdown", (e) => { if (e.pointerType !== "mouse") return; arrF = { x: e.clientX, s: fechasEl.scrollLeft }; movioF = false; });
-  addEventListener("pointermove", (e) => {
-    if (!arrF) return;
-    const dx = e.clientX - arrF.x;
-    if (Math.abs(dx) > 4) { movioF = true; fechasEl.classList.add("arrastra"); }
-    fechasEl.scrollLeft = arrF.s - dx;
-  });
-  addEventListener("pointerup", () => { if (arrF) { fechasEl.classList.remove("arrastra"); arrF = null; } });
-  fechasEl.addEventListener("click", (e) => { if (movioF) { e.preventDefault(); e.stopPropagation(); movioF = false; } }, true);
-  fechasEl.addEventListener("keydown", (e) => {
-    const k = { ArrowRight: 1, ArrowLeft: -1 }[e.key]; if (!k) return;
-    e.preventDefault();
-    fechasEl.scrollBy({ left: k * (fechasEl.querySelector(".fecha").offsetWidth + 24), behavior: reduce ? "auto" : "smooth" });
-  });
+  const fechasProx = $("#fechasProx"), fechasPas = $("#fechasPas");
+  fechasProx.innerHTML = prox.length ? prox.map(tarjeta).join("") : sinProx;
+  fechasPas.innerHTML = pas.map(tarjeta).join("");
+  if (!pas.length) { fechasPas.hidden = true; $("#pasadasHead").hidden = true; }
+  [fechasProx, fechasPas].forEach((el) => carrusel(el, ".fecha"));
   // flyer en grande
-  fechasEl.addEventListener("click", (e) => {
+  $(".agenda").addEventListener("click", (e) => {
     const b = e.target.closest(".fecha__flyer"); if (!b || b.disabled) return;
     const f = funcs[+b.dataset.f]; if (!f || !f.cartel) return;
     $("#detalleIn").innerHTML = `
@@ -246,8 +253,16 @@
         <h3>${esc(m.nombre)}</h3>
         <p class="mono">${esc(m.variante || "")}${m.variante ? " · " : ""}${m.precio ? "$" + esc(m.precio) : "Consultar"} ${stock(m)}</p>
       </li>`).join("")}</ul>
+      ${(D.paquetes || []).length ? `<div class="paquetes">
+        <h3 class="paquetes__t">paquetes</h3>
+        <ul>${D.paquetes.map((q) => `<li class="paquete">
+          <div class="paquete__img" aria-hidden="true">${(q.piezas || []).slice(0, 2).map((k) => merch[k] && merch[k].foto ? `<img src="${esc(merch[k].foto)}" alt="" loading="lazy">` : "").join("")}</div>
+          <div><h4>${esc(q.nombre)}</h4><p class="mono">${esc(q.detalle || "")}</p></div>
+          <b class="paquete__p">$${esc(q.precio)}</b>
+        </li>`).join("")}</ul>
+      </div>` : ""}
       <div class="merch__pie">
-        ${(D.combos || []).length ? `<p class="mono">${D.combos.map(esc).join(" · ")}</p>` : ""}
+
         <div class="botones">${boton(dm, "Apartar por DM", "")}<a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Merch — acordeacorde")}"><span>Por correo</span><i aria-hidden="true">↗</i></a></div>
       </div>`
     : `<div class="catalogo-vacio"><p>El catálogo se está imprimiendo. Mientras, lo que hay se vende en la mesa de cada función.</p>
@@ -259,17 +274,6 @@
   if (pub && pubBox) {
     pubBox.innerHTML = picture({ ...pub, alt: "" }, "100vw", 'loading="lazy"');
     pubBox.style.setProperty("--foco", pub.foco || "50% 60%");
-    if (!reduce) {
-      let pubVisible = false, pubPend = false;
-      const pubPinta = () => {
-        pubPend = false;
-        const r = pubBox.getBoundingClientRect(), vh = innerHeight;
-        const p = Math.min(1, Math.max(0, (vh - r.top) / (vh * .9 + r.height * .35)));
-        pubBox.style.setProperty("--p", p.toFixed(3));
-      };
-      new IntersectionObserver(([en]) => { pubVisible = en.isIntersecting; if (pubVisible) pubPinta(); }).observe(pubBox);
-      addEventListener("scroll", () => { if (pubVisible && !pubPend) { pubPend = true; requestAnimationFrame(pubPinta); } }, { passive: true });
-    }
   }
 
   /* ============ CONTACTO ============ */

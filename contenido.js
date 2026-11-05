@@ -103,7 +103,7 @@ window.AAC = {
   /* ---------- Funciones ----------
      fecha en formato "AAAA-MM-DD". Las fechas que ya pasaron se mueven
      solas a "ya pasó". lugar/ciudad null = no se muestra.
-     cartel: ruta al flyer (se recorta cuadrado en la lista; completo al abrirlo), p. ej.
+     cartel: ruta al flyer, idealmente vertical 4:5 (como en Instagram); se muestra completo, p. ej.
      "assets/carteles/2026-12-01-foro.webp". null = se muestra solo la fecha.
      post: link al post de Instagram con el flyer.
      estado: null | "cancelado" | "lluvia".  nota: línea corta opcional. */
@@ -127,7 +127,7 @@ window.AAC = {
     { fecha: "2026-11-06", lugar: "El Colectivo 818", ciudad: "Monterrey, N.L.", nota: "Con Ven y Mira.",
       post: "https://www.instagram.com/p/DeutHklD5ZR/", boletos: null, cartel: "assets/carteles/2026-11-06-el-colectivo-818.webp" },
     { fecha: "2026-11-21", fechaTexto: "21–22 nov 2026", lugar: "Congreso Nacional del Ruido · Aparato", ciudad: "Monterrey, N.L.",
-      post: "https://www.instagram.com/p/DdUDv-lEWMQ/", boletos: "https://www.eventbrite.com.mx/e/congreso-nacional-del-ruido-2026-tickets-1999620626121", cartel: "assets/carteles/2026-11-21-cndr.webp" },
+      post: "https://www.instagram.com/p/DdUDv-lEWMQ/", boletos: "https://www.eventbrite.com.mx/e/congreso-nacional-del-ruido-2026-tickets-1999620626121", cartel: null },
     /* Pendiente de fecha (no se muestra hasta tenerla): post DU9jwYtiV6i,
        entre dic 2025 y mar 2026. */
   ],
@@ -150,7 +150,12 @@ window.AAC = {
     { nombre: "Playera acordeacorde", variante: "Negra", foto: "assets/merch/playera-negra-nombre.webp",
       alt: "Playera negra con el nombre acordeacorde en blanco.", precio: 250, quedan: 0 },
   ],
-  combos: ["2 playeras: $400", "Playera + CD: $400"],
+  /* Paquetes: cada uno muestra las fotos de las piezas que lleva (índices de merch). */
+  paquetes: [
+    { nombre: "Playera + CD", detalle: "Cualquier playera", precio: 400, piezas: [0, 2] },
+    { nombre: "2 CDs", detalle: "La Idea × 2", precio: 400, piezas: [2, 2] },
+    { nombre: "2 playeras", detalle: "Las que quieras", precio: 400, piezas: [0, 1] },
+  ],
 
   /* ---------- Video ----------
      loop: clip corto sin audio que se repite en "en vivo".
@@ -163,11 +168,10 @@ window.AAC = {
   },
 
   /* ---------- Foto del público ----------
-     Va de fondo en "escríbenos": entra en blanco y negro y pasa a color
-     al hacer scroll. */
+     Va de fondo en "escríbenos", en blanco y negro. */
   publico: {
-    src: "assets/img/publico", anchos: [640, 1600], w: 1600, h: 1066, foco: "50% 60%",
-    alt: "acordeacorde y su público al final de una función: todos con las manos en alto.",
+    src: "assets/img/publico-bn", anchos: [640, 1600], w: 1600, h: 1066, foco: "50% 60%",
+    alt: "acordeacorde y su público al final de una función, en blanco y negro: todos con las manos en alto.",
   },
 
   /* ---------- Archivo ----------
