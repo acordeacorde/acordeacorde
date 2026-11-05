@@ -329,7 +329,7 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 .fecha--vacia a:hover { background: var(--hueso); color: var(--negro); }
 .fecha--vacia a:hover small { color: var(--negro); }
 @media (max-width: 700px) { .fecha { width: 78vw; } }
-.detalle__flyer { position: sticky; top: 70px; }
+.detalle__flyer { display: grid; gap: 14px; }
 .detalle__flyer img { width: 100%; height: auto; max-height: 82vh; object-fit: contain; object-position: left top; }
 @media (max-width: 800px) { .detalle__flyer { position: static; } }
 
@@ -570,3 +570,7 @@ html { -webkit-tap-highlight-color: transparent; }
   .yt__play:hover img { transform: none; filter: brightness(.82); }
   .yt__play:active .video__play { transform: scale(.92); }
 }
+
+/* varios flyers en una fecha */
+.fecha__n { position: absolute; z-index: 2; right: 10px; top: 10px; padding: 5px 8px; border-radius: 99px; font-size: 10px; letter-spacing: .1em;
+  background: rgba(10,10,10,.72); color: var(--hueso); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); }

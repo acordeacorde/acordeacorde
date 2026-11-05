@@ -242,12 +242,15 @@
     const d = new Date(f.fecha + "T12:00");
     return [`${String(d.getDate()).padStart(2, "0")} ${meses[d.getMonth()]}`, String(d.getFullYear())];
   };
+  const flyers = (f) => [].concat(f.cartel || []);
   const tarjeta = (f) => {
     const [dm, an] = diaMes(f);
+    const fl = flyers(f)[0], n = flyers(f).length;
     const tag = esProx(f) ? `<b class="tag tag--lleno">Próxima</b>` : ESTADO[f.estado] ? `<b class="tag">${ESTADO[f.estado]}</b>` : "";
     return `<li class="fecha${f.estado ? " fecha--" + esc(f.estado) : ""}">
-      <button type="button" class="fecha__flyer" data-f="${funcs.indexOf(f)}"${f.cartel ? ` style="--img:url('${esc(f.cartel)}')"` : ""} ${f.cartel ? `aria-label="Ver flyer del ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
-        ${f.cartel ? `<img src="${esc(f.cartel)}" alt="" loading="lazy" draggable="false">` : ""}
+      <button type="button" class="fecha__flyer" data-f="${funcs.indexOf(f)}"${fl ? ` style="--img:url('${esc(fl)}')"` : ""} ${fl ? `aria-label="Ver ${n > 1 ? n + " flyers" : "flyer"} del ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
+        ${fl ? `<img src="${esc(fl)}" alt="" loading="lazy" draggable="false">` : ""}
+        ${n > 1 ? `<span class="fecha__n mono" aria-hidden="true">1/${n}</span>` : ""}
       </button>
       <p class="fecha__d"><span>${esc(dm)}</span> <small class="mono">${esc(an)}</small>${tag}</p>
       <p class="fecha__l">${esc(f.lugar || f.ciudad || "")}</p>
@@ -265,9 +268,9 @@
   // flyer en grande
   $(".agenda").addEventListener("click", (e) => {
     const b = e.target.closest(".fecha__flyer"); if (!b || b.disabled) return;
-    const f = funcs[+b.dataset.f]; if (!f || !f.cartel) return;
+    const f = funcs[+b.dataset.f]; const fs = f ? flyers(f) : []; if (!fs.length) return;
     $("#detalleIn").innerHTML = `
-      <div class="detalle__flyer"><img src="${esc(f.cartel)}" alt="Flyer de la función del ${esc(fechaDe(f))}${f.lugar ? " en " + esc(f.lugar) : ""}."></div>
+      <div class="detalle__flyer">${fs.map((src, k) => `<img src="${esc(src)}" alt="Flyer${fs.length > 1 ? " " + (k + 1) + " de " + fs.length : ""} de la función del ${esc(fechaDe(f))}${f.lugar ? " en " + esc(f.lugar) : ""}.">`).join("")}</div>
       <div>
         <p class="mono">${esc(fechaDe(f))}${ESTADO[f.estado] ? " · " + ESTADO[f.estado] : ""}</p>
         <h2 id="detalleT">${esc(f.lugar || f.ciudad || "")}</h2>
@@ -275,7 +278,7 @@
         <div class="botones">${boton(f.boletos, "Boletos")}${boton(f.post, "Instagram")}</div>
       </div>`;
     if (typeof detalle.showModal === "function") { detalle.showModal(); document.body.classList.add("bloqueado"); detalle.scrollTop = 0; }
-    else open(f.cartel, "_blank");
+    else open(fs[0], "_blank");
   });
 
   /* ============ MERCH ============ */
