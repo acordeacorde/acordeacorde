@@ -103,11 +103,28 @@ window.AAC = {
   /* ---------- Funciones ----------
      fecha en formato "AAAA-MM-DD". Las fechas que ya pasaron se mueven
      solas a "ya pasó". lugar/ciudad null = no se muestra.
-     cartel: ruta al flyer (vertical, idealmente 4:5), p. ej.
-     "assets/carteles/2026-12-01-foro.webp". null = se muestra solo la fecha. */
+     cartel: ruta al flyer (se recorta cuadrado en la lista; completo al abrirlo), p. ej.
+     "assets/carteles/2026-12-01-foro.webp". null = se muestra solo la fecha.
+     post: link al post de Instagram con el flyer.
+     estado: null | "cancelado" | "lluvia".  nota: línea corta opcional. */
   funciones: [
-    { fecha: "2025-07-01", fechaTexto: "Julio 2025", ciudad: "Monterrey, N.L.", lugar: null,
-      nota: "Primera presentación en vivo.", boletos: null, cartel: null },
+    { fecha: "2025-07-18", lugar: "Katuaí", ciudad: null, nota: "Primera tocada.",
+      post: "https://www.instagram.com/p/DMGwVSCvGlb/", boletos: null, cartel: "assets/carteles/2025-07-18-katuai.webp" },
+    { fecha: "2025-10-25", lugar: "Pesadilla Colectiva · A909 Studio", ciudad: null,
+      post: "https://www.instagram.com/p/DPzFnpUD_uV/", boletos: null, cartel: "assets/carteles/2025-10-25-pesadilla-colectiva.webp" },
+    { fecha: "2025-12-28", lugar: "Armonía y Aparato Fest", ciudad: null,
+      post: "https://www.instagram.com/p/DSnagqljzDX/", boletos: null, cartel: "assets/carteles/2025-12-28-armonia-y-aparato.webp" },
+    { fecha: "2026-03-21", lugar: "Anexo 10 · Foro Barrio", ciudad: "Monterrey, N.L.",
+      post: "https://www.instagram.com/p/DVq2JW8kVZc/", boletos: null, cartel: "assets/carteles/2026-03-21-anexo-10.webp" },
+    { fecha: "2026-07-11", lugar: "Pre-fiesta Aquí No Hay Playa · Foro Nodriza", ciudad: "Monterrey, N.L.", nota: "Abrimos para UnPerro Andaluz.",
+      post: "https://www.instagram.com/p/DZEAvEDMUDs/", boletos: null, cartel: "assets/carteles/2026-07-11-aqui-no-hay-playa.webp" },
+    { fecha: "2026-11-06", lugar: "El Colectivo 818", ciudad: "Monterrey, N.L.", nota: "Con Ven y Mira.",
+      post: "https://www.instagram.com/p/DeutHklD5ZR/", boletos: null, cartel: "assets/carteles/2026-11-06-el-colectivo-818.webp" },
+    { fecha: "2026-11-21", fechaTexto: "21–22 nov 2026", lugar: "Congreso Nacional del Ruido · Aparato", ciudad: "Monterrey, N.L.",
+      post: "https://www.instagram.com/p/DdUDv-lEWMQ/", boletos: "https://www.eventbrite.com.mx/e/congreso-nacional-del-ruido-2026-tickets-1999620626121", cartel: "assets/carteles/2026-11-21-cndr.webp" },
+    /* Pendientes de fecha (no se muestran hasta tenerla):
+       DU9jwYtiV6i · DYfqk59R_-a (abrimos para Segundos Auxilios)
+       Db-GjqKye-s (León, Gto., cancelado) · DeSKoL7xtti (no tocamos por lluvia) */
   ],
 
   /* ---------- Merch ----------

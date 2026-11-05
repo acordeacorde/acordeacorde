@@ -155,15 +155,17 @@
     const d = new Date(f.fecha + "T12:00");
     return f.fechaTexto || `${String(d.getDate()).padStart(2, "0")} ${meses[d.getMonth()]} ${d.getFullYear()}`;
   };
+  const ESTADO = { cancelado: "Cancelado", lluvia: "Suspendido por lluvia" };
   const lugarDe = (f) => [f.lugar, f.ciudad].filter(Boolean).join(" · ");
   const funcs = (D.funciones || []).slice().sort((a, b) => a.fecha.localeCompare(b.fecha));
   const show = (f) => `<li class="show">
       <button type="button" class="show__flyer" data-f="${funcs.indexOf(f)}" ${f.cartel ? `aria-label="Ver flyer: ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
         ${f.cartel ? `<img src="${esc(f.cartel)}" alt="" loading="lazy">` : `<span>${esc(fechaDe(f))}</span>`}
       </button>
-      <p class="show__f mono">${esc(fechaDe(f))}</p>
+      <p class="show__f mono">${esc(fechaDe(f))}${ESTADO[f.estado] ? ` <b>${ESTADO[f.estado]}</b>` : ""}</p>
       <p class="show__l">${esc(lugarDe(f))}</p>
-      ${f.boletos ? boton(f.boletos, "Boletos", "boton--rojo") : ""}
+      ${f.nota ? `<p class="show__n">${esc(f.nota)}</p>` : ""}
+      ${f.boletos || f.post ? `<p class="show__a">${f.boletos ? boton(f.boletos, "Boletos", "boton--rojo") : ""}${f.post ? `<a class="show__post mono" href="${esc(f.post)}" target="_blank" rel="noopener">Instagram ↗</a>` : ""}</p>` : ""}
     </li>`;
   const prox = funcs.filter((f) => new Date(f.fecha + "T23:59") >= hoy);
   const pas = funcs.filter((f) => new Date(f.fecha + "T23:59") < hoy).reverse();
@@ -181,7 +183,7 @@
         <p class="mono">${esc(fechaDe(f))}</p>
         <h2 id="detalleT">${esc(f.lugar || f.ciudad || "")}</h2>
         ${f.lugar && f.ciudad ? `<p class="mono">${esc(f.ciudad)}</p>` : ""}
-        <div class="botones">${boton(f.boletos, "Boletos", "boton--rojo")}</div>
+        <div class="botones">${boton(f.boletos, "Boletos", "boton--rojo")}${boton(f.post, "Instagram")}</div>
       </div>`;
     if (typeof detalle.showModal === "function") { detalle.showModal(); document.body.classList.add("bloqueado"); detalle.scrollTop = 0; }
     else open(f.cartel, "_blank");
