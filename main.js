@@ -150,17 +150,42 @@
   /* ============ AGENDA ============ */
   const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
   const meses = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"];
-  const fila = (f) => {
+  // cada función es su flyer; abajo solo fecha, lugar y boletos
+  const fechaDe = (f) => {
     const d = new Date(f.fecha + "T12:00");
-    const fecha = f.fechaTexto || `${String(d.getDate()).padStart(2, "0")} ${meses[d.getMonth()]} ${d.getFullYear()}`;
-    return `<li><span class="f">${esc(fecha)}</span><span class="l"><b>${esc(f.lugar || f.ciudad || "")}</b>${f.nota ? `<small>${esc(f.ciudad && f.lugar ? f.ciudad + " · " : "")}${esc(f.nota)}</small>` : ""}</span>${f.boletos ? boton(f.boletos, "Boletos") : "<span></span>"}</li>`;
+    return f.fechaTexto || `${String(d.getDate()).padStart(2, "0")} ${meses[d.getMonth()]} ${d.getFullYear()}`;
   };
+  const lugarDe = (f) => [f.lugar, f.ciudad].filter(Boolean).join(" · ");
   const funcs = (D.funciones || []).slice().sort((a, b) => a.fecha.localeCompare(b.fecha));
+  const show = (f) => `<li class="show">
+      <button type="button" class="show__flyer" data-f="${funcs.indexOf(f)}" ${f.cartel ? `aria-label="Ver flyer: ${esc(fechaDe(f))}${f.lugar ? ", " + esc(f.lugar) : ""}"` : 'disabled tabindex="-1"'}>
+        ${f.cartel ? `<img src="${esc(f.cartel)}" alt="" loading="lazy">` : `<span>${esc(fechaDe(f))}</span>`}
+      </button>
+      <p class="show__f mono">${esc(fechaDe(f))}</p>
+      <p class="show__l">${esc(lugarDe(f))}</p>
+      ${f.boletos ? boton(f.boletos, "Boletos", "boton--rojo") : ""}
+    </li>`;
   const prox = funcs.filter((f) => new Date(f.fecha + "T23:59") >= hoy);
   const pas = funcs.filter((f) => new Date(f.fecha + "T23:59") < hoy).reverse();
-  $("#proximas").innerHTML = prox.length ? prox.map(fila).join("") :
-    `<li class="vacio-li"><span class="vacio">Sin funciones confirmadas. Las máscaras están en la tintorería.<br><a class="boton" href="mailto:${esc(correo)}?subject=${encodeURIComponent("Función — acordeacorde")}">¿Tienes foro? Escríbenos ↗</a></span></li>`;
-  $("#pasadas").innerHTML = pas.map(fila).join("");
+  $("#proximas").innerHTML = prox.length ? prox.map(show).join("") :
+    `<li class="shows__vacio"><a href="mailto:${esc(correo)}?subject=${encodeURIComponent("Función — acordeacorde")}">Sin fechas por ahora. ¿Tienes foro? <u>Escríbenos</u></a></li>`;
+  $("#pasadas").innerHTML = pas.map(show).join("");
+  if (!pas.length) { $("#pasadasT").hidden = true; $("#pasadas").hidden = true; }
+  // flyer en grande
+  $(".agenda").addEventListener("click", (e) => {
+    const b = e.target.closest(".show__flyer"); if (!b || b.disabled) return;
+    const f = funcs[+b.dataset.f]; if (!f || !f.cartel) return;
+    $("#detalleIn").innerHTML = `
+      <div class="detalle__flyer"><img src="${esc(f.cartel)}" alt="Flyer de la función del ${esc(fechaDe(f))}${f.lugar ? " en " + esc(f.lugar) : ""}."></div>
+      <div>
+        <p class="mono">${esc(fechaDe(f))}</p>
+        <h2 id="detalleT">${esc(f.lugar || f.ciudad || "")}</h2>
+        ${f.lugar && f.ciudad ? `<p class="mono">${esc(f.ciudad)}</p>` : ""}
+        <div class="botones">${boton(f.boletos, "Boletos", "boton--rojo")}</div>
+      </div>`;
+    if (typeof detalle.showModal === "function") { detalle.showModal(); document.body.classList.add("bloqueado"); detalle.scrollTop = 0; }
+    else open(f.cartel, "_blank");
+  });
 
   /* ============ MERCH ============ */
   const merch = D.merch || [];
@@ -189,7 +214,7 @@
   }
 
   /* ============ CONTACTO ============ */
-  const REDES = [["spotify", "Spotify"], ["instagram", "Instagram"], ["appleMusic", "Apple Music"], ["youtube", "YouTube"], ["bandcamp", "Bandcamp"], ["tiktok", "TikTok"], ["linktree", "Linktree"]];
+  const REDES = [["spotify", "Spotify"], ["instagram", "Instagram"], ["appleMusic", "Apple Music"], ["youtube", "YouTube"], ["bandcamp", "Bandcamp"], ["tiktok", "TikTok"]];
   $("#redes").innerHTML = REDES.filter(([k]) => enlaces[k]).map(([k, n]) => `<li>${boton(enlaces[k], n)}</li>`).join("");
   $$("#correoGrande, #correoTxt, #menuCorreo").forEach((a) => { a.href = "mailto:" + correo; });
   $("#correoTxt").textContent = correo; $("#menuCorreo").textContent = correo;

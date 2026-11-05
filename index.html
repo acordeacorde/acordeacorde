@@ -29,7 +29,7 @@
   <script>document.documentElement.classList.add("js")</script>
 
   <script type="application/ld+json">
-  {"@context":"https://schema.org","@type":"MusicGroup","name":"acordeacorde","foundingDate":"2024","foundingLocation":{"@type":"Place","name":"Monterrey, Nuevo León, México"},"genre":["Noise rock","Punk","Post-punk","Stoner","Rock progresivo","Experimental"],"email":"acordeacordemusic@gmail.com","sameAs":["https://open.spotify.com/artist/30RUl4HTPHJGzQqRHe2yyr","https://www.instagram.com/acorde_acorde/","https://linktr.ee/acordeacorde"],"album":[{"@type":"MusicAlbum","name":"La Idea","datePublished":"2025-11-14"}]}
+  {"@context":"https://schema.org","@type":"MusicGroup","name":"acordeacorde","foundingDate":"2024","foundingLocation":{"@type":"Place","name":"Monterrey, Nuevo León, México"},"genre":["Noise rock","Punk","Post-punk","Stoner","Rock progresivo","Experimental"],"email":"acordeacordemusic@gmail.com","sameAs":["https://open.spotify.com/artist/30RUl4HTPHJGzQqRHe2yyr","https://www.instagram.com/acorde_acorde/"],"album":[{"@type":"MusicAlbum","name":"La Idea","datePublished":"2025-11-14"}]}
   </script>
 </head>
 <body>
@@ -105,7 +105,6 @@
       </h1>
 
       <div class="inicio__pie">
-        <p class="mono">Noise rock · punk · post-punk · stoner · progresivo · teatro · poesía</p>
         <a class="nuevo" href="#musica" data-abre="0">
           <span class="mono">Nuevo sencillo</span>
           <b>el pedo no son las drogas</b>
@@ -113,11 +112,6 @@
         </a>
       </div>
       <span class="inicio__scroll mono" aria-hidden="true">Scroll</span>
-    </section>
-
-    <!-- ============ MANIFIESTO ============ -->
-    <section class="manifiesto" aria-label="Sobre la banda">
-      <p class="manifiesto__txt lineas">Cuatro máscaras de Monterrey. Ruido, teatro y poesía hasta que deja de tener nombre.</p>
     </section>
 
     <!-- ============ MÚSICA ============ -->
@@ -138,10 +132,10 @@
       <div class="tira" id="tira" tabindex="0" aria-label="Fotos en vivo. Usa las flechas para recorrerlas."><!-- main.js --></div>
 
       <div class="agenda">
-        <h3 class="sub">próximas funciones</h3>
-        <ul id="proximas"><!-- main.js --></ul>
-        <h3 class="sub">ya pasó</h3>
-        <ul id="pasadas" class="agenda--pasadas"><!-- main.js --></ul>
+        <h3>próximas funciones</h3>
+        <ul class="shows" id="proximas"><!-- main.js --></ul>
+        <h3 id="pasadasT">ya pasó</h3>
+        <ul class="shows shows--pasadas" id="pasadas"><!-- main.js --></ul>
       </div>
     </section>
 

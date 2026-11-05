@@ -17,7 +17,6 @@ window.AAC = {
     bandcamp:   null,
     tiktok:     null,
     instagram:  "https://www.instagram.com/acorde_acorde/",
-    linktree:   "https://linktr.ee/acordeacorde",
   },
 
   contacto: {
@@ -103,7 +102,9 @@ window.AAC = {
 
   /* ---------- Funciones ----------
      fecha en formato "AAAA-MM-DD". Las fechas que ya pasaron se mueven
-     solas a "Funciones pasadas". lugar/ciudad null = "por confirmar". */
+     solas a "ya pasó". lugar/ciudad null = no se muestra.
+     cartel: ruta al flyer (vertical, idealmente 4:5), p. ej.
+     "assets/carteles/2026-12-01-foro.webp". null = se muestra solo la fecha. */
   funciones: [
     { fecha: "2025-07-01", fechaTexto: "Julio 2025", ciudad: "Monterrey, N.L.", lugar: null,
       nota: "Primera presentación en vivo.", boletos: null, cartel: null },
