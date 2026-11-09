@@ -115,13 +115,27 @@
     const s = (r.canciones || []).reduce((t, [, d]) => { const [m, ss] = String(d).split(":").map(Number); return t + (m * 60 + (ss || 0)); }, 0);
     return s ? `${Math.round(s / 60)} min` : "";
   };
-  $("#lanzamientos").innerHTML = lanz.map((r, i) => `
-    <li><button type="button" data-i="${i}" aria-haspopup="dialog">
+  // los sencillos que son parte de un disco van agrupados debajo de él, con su número de pista
+  const dos = (n) => String(n).padStart(2, "0");
+  const deDisco = (t) => lanz.map((s, j) => [s, j]).filter(([s]) => s.de === t).sort((a, b) => (a[0].pista || 0) - (b[0].pista || 0));
+  $("#lanzamientos").innerHTML = lanz.map((r, i) => [r, i]).filter(([r]) => !r.de).map(([r, i]) => {
+    const hijos = deDisco(r.titulo);
+    return `<li><button type="button" data-i="${i}" aria-haspopup="dialog">
       ${r.portada ? `<img class="lista__mini" src="${esc(r.portada)}" alt="" loading="lazy" width="640" height="640">` : ""}
-      <span class="lista__n">${String(i + 1).padStart(2, "0")}</span>
+      <span class="lista__n">${esc(String(r.fecha || "").slice(-4))}</span>
       <span class="lista__t">${esc(r.titulo || r.tipo)}</span>
       <span class="lista__m">${r.estado === "nuevo" ? "<b>Nuevo</b>" : r.estado === "debut" ? "<b>Álbum debut</b>" : ""}${esc(r.tipo)} · ${esc(r.fecha)}</span>
-    </button></li>`).join("");
+    </button>
+    ${hijos.length ? `<ul class="sub" aria-label="Sencillos de ${esc(r.titulo)}">
+      <li class="sub__h mono" aria-hidden="true">Salieron antes como sencillos</li>
+      ${hijos.map(([s, j]) => `<li><button type="button" data-i="${j}" aria-haspopup="dialog">
+        ${s.portada ? `<img src="${esc(s.portada)}" alt="" loading="lazy" width="640" height="640">` : "<span></span>"}
+        <span class="sub__n mono">Pista ${dos(s.pista || 0)}</span>
+        <span class="sub__t">${esc(s.titulo)}</span>
+        <span class="sub__m mono">Sencillo · ${esc(s.fecha)}</span>
+      </button></li>`).join("")}
+    </ul>` : ""}</li>`;
+  }).join("");
 
   // reproductor de YouTube: miniatura local y el iframe solo al dar play
   const yt = (r, auto) => `<div class="yt" data-yt="${esc(r.youtube)}">
@@ -195,6 +209,8 @@
   // detalle
   const detalle = $("#detalle");
   const boton = (url, txt, cls = "") => url ? `<a class="boton ${cls}" href="${esc(url)}" target="_blank" rel="noopener"><span>${esc(txt)}</span><i aria-hidden="true">↗</i></a>` : "";
+  // página con todas las plataformas (Amazon, Tidal, YouTube Music…) a partir del link de Spotify
+  const plataformas = (e) => { const m = String(e.spotify || "").match(/open\.spotify\.com\/(album|track)\/(\w+)/); return m ? `https://${m[1] === "album" ? "album" : "song"}.link/s/${m[2]}` : null; };
   const abrir = (i) => {
     const r = lanz[i]; if (!r) return;
     const e = r.enlaces || {};
@@ -203,9 +219,9 @@
       <div>
         <p class="mono">${esc(r.tipo)} · ${esc(r.fecha)}${minutos(r) && r.canciones.length > 1 ? " · " + minutos(r) : ""}</p>
         <h2 id="detalleT">${esc(r.titulo || r.tipo)}</h2>
-        ${r.canciones && r.canciones.length ? `<ol class="pistas">${r.canciones.map(([n, t]) => `<li><span>${esc(n)}</span><span>${esc(t)}</span></li>`).join("")}</ol>` : ""}
+        ${r.canciones && r.canciones.length ? `<ol class="pistas">${r.canciones.map(([n, t]) => `<li><span>${esc(n)}${lanz.some((s) => s.de === r.titulo && s.titulo === n) ? ' <b class="pistas__s mono">sencillo</b>' : ""}</span><span>${esc(t)}</span></li>`).join("")}</ol>` : ""}
         ${r.spotifyEmbed ? `<div class="reproductor"><iframe src="${esc(r.spotifyEmbed)}?theme=0" height="${r.spotifyAlto || 152}" loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Reproductor de Spotify: ${esc(r.titulo || "")}"></iframe></div>` : ""}
-        <div class="botones">${boton(e.spotify, "Spotify", "")}${boton(e.appleMusic, "Apple Music")}${boton(e.youtube, "YouTube")}${boton(e.bandcamp, "Bandcamp")}</div>
+        <div class="botones">${boton(e.spotify, "Spotify", "")}${boton(e.appleMusic, "Apple Music")}${boton(e.youtube, "YouTube")}${boton(e.deezer, "Deezer")}${boton(e.bandcamp, "Bandcamp")}${boton(plataformas(e), "Todas las plataformas")}</div>
       </div>`;
     if (typeof detalle.showModal === "function") { detalle.showModal(); document.body.classList.add("bloqueado"); }
     else location.hash = "#musica";

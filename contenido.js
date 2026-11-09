@@ -34,7 +34,9 @@ window.AAC = {
        El lanzamiento más reciente con video aparece con reproductor en "Música".
      youtubeTipo: "Visualizer oficial", "Video oficial"…
      youtubePoster: miniatura local (sin extensión; -640.webp y .webp) para no cargar YouTube hasta dar play
-     canciones: [["Nombre", "3:45"], ...] — vacío = tracklist pendiente */
+     canciones: [["Nombre", "3:45"], ...] — vacío = tracklist pendiente
+     de / pista: si el sencillo es parte de un disco ("La Idea") y en qué pista va;
+       entonces se muestra agrupado debajo de ese disco y no como lanzamiento aparte. */
   lanzamientos: [
     {
       tipo: "Sencillo", estado: "nuevo",
@@ -45,7 +47,7 @@ window.AAC = {
       spotifyEmbed: "https://open.spotify.com/embed/album/5OqBcJx1HcbrGkbej8yUD1", spotifyAlto: 152,
       bandcampEmbed: null, youtube: "utgpNj8IBcg", youtubeTipo: "Visualizer oficial",
       youtubePoster: "assets/video/visualizer-el-pedo",
-      enlaces: { spotify: "https://open.spotify.com/album/5OqBcJx1HcbrGkbej8yUD1", appleMusic: null, youtube: "https://www.youtube.com/watch?v=utgpNj8IBcg", bandcamp: null },
+      enlaces: { spotify: "https://open.spotify.com/album/5OqBcJx1HcbrGkbej8yUD1", appleMusic: "https://music.apple.com/mx/album/el-pedo-no-son-las-drogas-single/6798564549", deezer: "https://www.deezer.com/album/1047381202", youtube: "https://www.youtube.com/watch?v=utgpNj8IBcg", bandcamp: null },
       canciones: [["el pedo no son las drogas", "5:40"]],
     },
     {
@@ -56,7 +58,7 @@ window.AAC = {
       portadaAlt: "Portada de La Idea: ilustración en tinta de un samurái con armadura entre nubes.",
       spotifyEmbed: "https://open.spotify.com/embed/album/1QBpP1M0CYkOCVw32arABe", spotifyAlto: 352,
       bandcampEmbed: null, youtube: null,
-      enlaces: { spotify: "https://open.spotify.com/album/1QBpP1M0CYkOCVw32arABe", appleMusic: null, youtube: null, bandcamp: null },
+      enlaces: { spotify: "https://open.spotify.com/album/1QBpP1M0CYkOCVw32arABe", appleMusic: "https://music.apple.com/mx/album/la-idea/1846983033", deezer: "https://www.deezer.com/album/838393812", youtube: null, bandcamp: null },
       canciones: [
         ["Intro", "1:00"],
         ["Mensajes", "2:16"],
@@ -70,36 +72,36 @@ window.AAC = {
       ],
     },
     {
-      tipo: "Sencillo", estado: null,
+      tipo: "Sencillo", estado: null, de: "La Idea", pista: 4,
       fecha: "22 jul 2025", titulo: "Mal día para mi hígado pt1",
       nota: "Tercer sencillo. También está en La Idea.",
       portada: "assets/portadas/mal-dia-pt1.webp",
       portadaAlt: "Portada de Mal día para mi hígado pt1: retrato de un integrante con pasamontañas tejido negro.",
       spotifyEmbed: "https://open.spotify.com/embed/album/5DNhL2nTByGQ9u0zGrM5tk", spotifyAlto: 152,
       bandcampEmbed: null, youtube: null,
-      enlaces: { spotify: "https://open.spotify.com/album/5DNhL2nTByGQ9u0zGrM5tk", appleMusic: null, youtube: null, bandcamp: null },
+      enlaces: { spotify: "https://open.spotify.com/album/5DNhL2nTByGQ9u0zGrM5tk", appleMusic: "https://music.apple.com/mx/album/mal-d%C3%ADa-para-m%C3%AD-h%C3%ADgado-pt1-single/1828526254", deezer: "https://www.deezer.com/album/792577021", youtube: null, bandcamp: null },
       canciones: [["Mal día para mi hígado pt1", "2:11"]],
     },
     {
-      tipo: "Sencillo", estado: null,
+      tipo: "Sencillo", estado: null, de: "La Idea", pista: 8,
       fecha: "13 jun 2025", titulo: "Lágrimas",
       nota: "Segundo sencillo. También está en La Idea.",
       portada: "assets/portadas/lagrimas.webp",
       portadaAlt: "Portada de Lágrimas: una figura enmascarada sobre un aire acondicionado, de noche, entre humo.",
       spotifyEmbed: "https://open.spotify.com/embed/album/1fbxq39Iuq4RFuhgRgO1Bj", spotifyAlto: 152,
       bandcampEmbed: null, youtube: null,
-      enlaces: { spotify: "https://open.spotify.com/album/1fbxq39Iuq4RFuhgRgO1Bj", appleMusic: null, youtube: null, bandcamp: null },
+      enlaces: { spotify: "https://open.spotify.com/album/1fbxq39Iuq4RFuhgRgO1Bj", appleMusic: "https://music.apple.com/mx/album/l%C3%A1grimas-single/1820350363", deezer: "https://www.deezer.com/album/771360511", youtube: null, bandcamp: null },
       canciones: [["Lágrimas", "3:14"]],
     },
     {
-      tipo: "Sencillo", estado: "primero",
+      tipo: "Sencillo", estado: "primero", de: "La Idea", pista: 2,
       fecha: "2 may 2025", titulo: "Mensajes",
       nota: "El primero. Donde empezó todo.",
       portada: "assets/portadas/mensajes.webp",
       portadaAlt: "Portada de Mensajes: figuras enmascaradas con los brazos en alto entre árboles, de noche.",
       spotifyEmbed: "https://open.spotify.com/embed/album/45tyRCeeSmE5GMm0dFcO6L", spotifyAlto: 152,
       bandcampEmbed: null, youtube: null,
-      enlaces: { spotify: "https://open.spotify.com/album/45tyRCeeSmE5GMm0dFcO6L", appleMusic: null, youtube: null, bandcamp: null },
+      enlaces: { spotify: "https://open.spotify.com/album/45tyRCeeSmE5GMm0dFcO6L", appleMusic: "https://music.apple.com/mx/album/mensajes-single/1812194503", deezer: "https://www.deezer.com/album/751064761", youtube: null, bandcamp: null },
       canciones: [["Mensajes", "2:16"]],
     },
   ],
@@ -136,6 +138,9 @@ window.AAC = {
     { fecha: "2026-11-21", lugar: "Congreso Nacional del Ruido · Aparato", ciudad: "Monterrey, N.L.", nota: "Festival a beneficio.",
       post: "https://www.instagram.com/p/DdUDv-lEWMQ/", boletos: "https://www.eventbrite.com.mx/e/congreso-nacional-del-ruido-2026-tickets-1999620626121",
       cartel: ["assets/carteles/2026-11-21-congreso-nacional-del-ruido-b.webp", "assets/carteles/2026-11-21-congreso-nacional-del-ruido.webp"] },
+    { fecha: "2026-12-11", lugar: "Derrame Vol. 1 · Charro Negro", ciudad: "Monterrey, N.L.", nota: "Puertas 7 pm · cover $50.",
+      post: null, boletos: null,
+      cartel: ["assets/carteles/2026-12-11-derrame-vol-1.webp", "assets/carteles/2026-12-11-derrame-vol-1-b.webp"] },
   ],
 
   /* ---------- Merch ----------

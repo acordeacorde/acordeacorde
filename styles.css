@@ -693,3 +693,31 @@ html { -webkit-tap-highlight-color: transparent; }
 .fecha__n b { font-weight: inherit; }
 .pila__hint b { color: var(--hueso); font-weight: inherit; }
 .detalle:focus, .detalle:focus-visible { outline: none; }
+
+/* la portada recorta su video (Safari a veces deja salir el iframe escalado) */
+.inicio, .inicio__yt, .inicio__foto { clip-path: inset(0); }
+.inicio__yt { contain: paint; transform: translateZ(0); }
+.musica { position: relative; z-index: 2; background: var(--negro); }
+
+/* sencillos agrupados bajo su disco */
+.lista .sub { list-style: none; margin: 0; padding: 0 0 clamp(12px, 1.6vw, 22px); }
+.lista .sub li { border-bottom: 0; }
+.sub__h { padding: 0 var(--m) 8px calc(var(--m) + 80px); color: var(--gris); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; }
+.lista .sub button {
+  grid-template-columns: 48px 76px 1fr auto; gap: 14px; padding: 8px var(--m) 8px calc(var(--m) + 80px); min-height: 0;
+}
+.lista .sub img { width: 48px; height: 48px; object-fit: cover; }
+.sub__n { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gris); }
+.sub__t { font-family: var(--logo); font-weight: 900; font-size: clamp(20px, 2vw, 30px); line-height: 1.05; letter-spacing: -.02em; filter: url(#tinta-s); }
+.sub__m { font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--gris); text-align: right; white-space: nowrap; }
+.lista .sub button:hover .sub__t { transform: translateX(8px); }
+.sub__t { transition: transform .6s var(--out), color .4s; }
+.pistas__s { display: inline-block; margin-left: 8px; padding: 2px 7px; border: 1px solid var(--linea); border-radius: 99px; font-size: 9px; letter-spacing: .12em; text-transform: uppercase; color: var(--gris); vertical-align: middle; }
+@media (max-width: 760px) {
+  .sub__h { padding-left: calc(var(--m) + 70px); }
+  .lista .sub button { grid-template-columns: 44px 1fr; grid-template-rows: auto auto; gap: 2px 12px; padding: 8px var(--m) 8px calc(var(--m) + 70px); }
+  .lista .sub img { grid-row: 1 / span 2; width: 44px; height: 44px; }
+  .sub__n { grid-column: 2; grid-row: 2; }
+  .sub__t { grid-column: 2; grid-row: 1; }
+  .sub__m { display: none; }
+}
