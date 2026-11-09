@@ -489,6 +489,13 @@
   const laminas = $(".laminas");
   if (laminas) carrusel(laminas, ".lamina");
 
+  /* ============ LO QUE DICEN: aparecen al llegar ============ */
+  const citas = $$(".cita");
+  if ("IntersectionObserver" in window) {
+    const ojoC = new IntersectionObserver((ents) => ents.forEach((en) => { if (en.isIntersecting) { en.target.classList.add("ve"); ojoC.unobserve(en.target); } }), { threshold: .3 });
+    citas.forEach((c) => ojoC.observe(c));
+  } else citas.forEach((c) => c.classList.add("ve"));
+
   /* ============ MENÚ ============ */
   const menu = $("#menu"), menuBtn = $("#menuBtn");
   const setMenu = (si) => {
