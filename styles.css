@@ -723,37 +723,31 @@ html { -webkit-tap-highlight-color: transparent; }
 }
 
 /* =====================================================================
-   LO QUE DICEN — frases de prensa, como contraportada de disco
+   LO QUE DICEN — como créditos de película: quién a un lado, qué dijo al otro
    ===================================================================== */
 .dicen {
-  display: grid; grid-template-columns: repeat(12, 1fr); gap: clamp(28px, 4vw, 64px) clamp(16px, 2vw, 32px);
-  padding: clamp(70px, 10vw, 150px) var(--m) clamp(40px, 6vw, 80px); border-top: 1px solid var(--linea);
+  display: grid; justify-items: center; gap: clamp(36px, 5vw, 72px);
+  padding: clamp(80px, 11vw, 160px) var(--m); border-top: 1px solid var(--linea);
 }
-.cita { margin: 0; }
+.cita {
+  margin: 0; width: min(1100px, 100%);
+  display: grid; grid-template-columns: 1fr 1.6fr; align-items: baseline; gap: 0 clamp(20px, 3vw, 48px);
+}
+.cita figcaption {
+  grid-column: 1; grid-row: 1; text-align: right;
+  font-family: var(--mono); font-weight: 700; font-size: clamp(11px, 1vw, 13px); letter-spacing: .18em; text-transform: uppercase; color: var(--gris);
+}
 .cita blockquote {
-  margin: 0; font-family: var(--logo); font-weight: 900; letter-spacing: -.025em; line-height: 1.02; filter: url(#tinta-s);
-  text-wrap: balance;
+  grid-column: 2; grid-row: 1; margin: 0; text-align: left;
+  font-family: var(--logo); font-weight: 900; font-size: clamp(26px, 3vw, 46px); line-height: 1.05; letter-spacing: -.02em;
+  filter: url(#tinta-s); text-wrap: balance;
 }
-.cita sup { font-family: var(--sans); font-weight: 700; font-size: .5em; color: var(--gris); vertical-align: super; margin-left: .1em; }
-.cita figcaption { margin-top: 14px; font-family: var(--mono); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gris); }
-.cita--1 { grid-column: 1 / span 7; }
-.cita--1 blockquote { font-size: clamp(38px, 5.6vw, 92px); }
-.cita--2 { grid-column: 8 / span 5; align-self: end; }
-.cita--2 blockquote { font-size: clamp(24px, 2.6vw, 40px); }
-.cita--3 { grid-column: 3 / span 6; text-align: center; transform: rotate(-3deg); }
-.cita--3 blockquote { font-size: clamp(46px, 7.4vw, 124px); }
-.cita--4 { grid-column: 8 / span 5; align-self: center; text-align: right; }
-.cita--4 blockquote { font-size: clamp(22px, 2.4vw, 36px); }
-.dicen__nota { grid-column: 1 / -1; margin: 0; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--gris); opacity: .7; }
-.js .cita { opacity: 0; transform: translateY(30px); transition: opacity .9s var(--ease), transform 1.1s var(--out); }
-.js .cita--3 { transform: translateY(30px) rotate(-3deg); }
+.js .cita { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease), transform 1.1s var(--out); }
 .js .cita.ve { opacity: 1; transform: none; }
-.js .cita--3.ve { transform: rotate(-3deg); }
 @media (max-width: 760px) {
-  .dicen { grid-template-columns: 1fr; gap: 40px; }
-  .cita--1, .cita--2, .cita--3, .cita--4 { grid-column: 1; }
-  .cita--2, .cita--4 { text-align: right; padding-left: 18%; }
-  .cita--3 { text-align: left; }
-  .cita--1 blockquote { font-size: 44px; } .cita--3 blockquote { font-size: 56px; }
-  .cita--2 blockquote, .cita--4 blockquote { font-size: 26px; }
+  .dicen { gap: 44px; }
+  .cita { grid-template-columns: 1fr; text-align: center; gap: 10px; }
+  .cita figcaption, .cita blockquote { grid-column: 1; text-align: center; }
+  .cita figcaption { grid-row: 2; }
+  .cita blockquote { font-size: 30px; }
 }
