@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>CHOQUE · SLT × MTY</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Fraunces:ital,opsz,wght,SOFT,WONK@1,9..144,300..900,0..100,1&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /*
+    CHOQUE — identidad para SLT × MTY
+    Dos mundos que se empalman sobre una falla diagonal:
+      SALTILLO  · adobe / desierto · Fraunces itálica (orgánica, caligráfica)
+      MONTERREY · acero / noche    · Archivo (industrial, de ancho variable)
+    Lo que cruza la falla cambia de mundo: color, letra o ambos.
+  */
+  :root {
+    --adobe: #e08a2c;      /* fondo Saltillo */
+    --adobe-2: #c8641f;    /* sombra del adobe */
+    --tinta: #1d2b22;      /* verde huizache: tinta de Saltillo */
+    --acero: #0c0c0c;      /* fondo Monterrey */
+    --hueso: #ece9e2;      /* tinta de Monterrey */
+    --rojo: #c0212b;       /* la chispa del choque */
+  }
+  html, body { margin: 0; background: #2a2a2a; }
+  body { display: grid; place-items: start center; padding: 0; }
+  #lienzo svg { display: block; }
+  .slt { font-family: "Fraunces", Georgia, serif; font-style: italic; font-variation-settings: "SOFT" 100, "WONK" 1; }
+  .mty { font-family: "Archivo", "Helvetica Neue", Arial, sans-serif; }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; letter-spacing: .08em; }
+</style>
+</head>
+<body>
+<div id="lienzo"></div>
+<script>
+/* ===================== DATOS DEL EVENTO (editar aquí) ===================== */
+const EV = {
+  titulo: "CHOQUE",
+  fecha: "SÁB 00 · MES",             // ← PENDIENTE: poner la fecha real
+  anio: "2026",
+  puertas: "6:00 PM",
+  bazar: "7:00 — 11:00 PM",
+  bazarNota: "",                      // p. ej. "por confirmar"; vacío = no se muestra
+  lugar: "BEER THERAPY",
+  direccion: ["Blvd. Eulalio Gutiérrez Treviño 1905, local 8", "Los Tulipanes, 25275 · Saltillo, Coah."],
+  slt: ["Cenicero", "Nova Doler"],
+  mty: ["ADOBES BUENOS", "ACORDEACORDE"],
+};
+/* ========================================================================== */
+
+const C = { adobe:"#e08a2c", adobe2:"#c8641f", tinta:"#1d2b22", acero:"#0c0c0c", hueso:"#ece9e2", rojo:"#c0212b" };
+const formato = new URLSearchParams(location.search).get("f") || "post";
+
+// PRNG con semilla para que los fragmentos salgan igual en cada export
+function rng(seed){ return () => { seed |= 0; seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+
+/* Base: dos mundos + falla + textura. top/bot = x de la falla arriba/abajo */
+function base(W, H, top, bot, seed){
+  const r = rng(seed);
+  const sx = y => top + (bot - top) * y / H;
+  let s = `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <defs>
+    <clipPath id="cSLT"><polygon points="0,0 ${top},0 ${bot},${H} 0,${H}"/></clipPath>
+    <clipPath id="cMTY"><polygon points="${top},0 ${W},0 ${W},${H} ${bot},${H}"/></clipPath>
+    <filter id="mancha" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".0035 .006" numOctaves="4" seed="${seed}"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 .78  0 0 0 0 .39  0 0 0 0 .12  0 0 0 -2.2 1.35"/>
+    </filter>
+    <filter id="spray" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="1" seed="${seed+3}" result="n"/>
+      <feTurbulence type="fractalNoise" baseFrequency=".004" numOctaves="3" seed="${seed+9}" result="m"/>
+      <feComposite in="n" in2="m" operator="arithmetic" k1="0" k2=".9" k3="1.1" k4="-.95"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 .11  0 0 0 0 .17  0 0 0 0 .13  2.4 0 0 0 -1.25"/>
+    </filter>
+    <filter id="grano" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="${seed+1}"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.6 1.05"/>
+    </filter>
+    <filter id="granoOsc" x="0" y="0" width="100%" height="100%">
+      <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="${seed+2}"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.4 .95"/>
+    </filter>
+    <filter id="tinta"><feTurbulence type="fractalNoise" baseFrequency=".045" numOctaves="2" seed="${seed+4}"/><feDisplacementMap in="SourceGraphic" scale="3.5"/></filter>
+  </defs>
+  <!-- SALTILLO -->
+  <g clip-path="url(#cSLT)">
+    <rect width="${W}" height="${H}" fill="${C.adobe}"/>
+    <rect width="${W}" height="${H}" filter="url(#mancha)" opacity=".85"/>
+    <rect width="${W}" height="${H}" filter="url(#spray)" opacity=".55"/>
+    <rect width="${W}" height="${H}" filter="url(#granoOsc)" opacity=".22"/>
+  </g>
+  <!-- MONTERREY -->
+  <g clip-path="url(#cMTY)">
+    <rect width="${W}" height="${H}" fill="${C.acero}"/>
+    ${rejilla(W, H)}
+    <rect width="${W}" height="${H}" filter="url(#grano)" opacity=".13"/>
+  </g>`;
+  return { s, sx, r };
+}
+
+// Monterrey: retícula técnica muy tenue (plano industrial)
+function rejilla(W, H){
+  let g = `<g stroke="${C.hueso}" stroke-opacity=".055" stroke-width="1">`;
+  for (let x = 0; x <= W; x += 54) g += `<line x1="${x}" y1="0" x2="${x}" y2="${H}"/>`;
+  for (let y = 0; y <= H; y += 54) g += `<line x1="0" y1="${y}" x2="${W}" y2="${y}"/>`;
+  return g + `</g>`;
+}
+
+/* Fragmentos que saltan de un mundo al otro (esquirlas del choque) */
+function esquirlas(r, sx, H, n, y0, y1, ang){
+  let g = "";
+  const t = Math.tan(ang);
+  for (let i = 0; i < n; i++){
+    const y = y0 + r() * (y1 - y0);
+    const lado = r() < .5 ? -1 : 1;             // -1 cae en Saltillo, 1 en Monterrey
+    const d = Math.pow(r(), 1.7) * 330 + 8;
+    const x = sx(y) + lado * d;
+    const w = 10 + r() * 46 * (1 - d / 420), h = 5 + r() * 15;
+    const col = lado < 0 ? (r() < .82 ? C.acero : C.rojo) : (r() < .8 ? C.adobe : C.hueso);
+    const sk = -18 + r() * 10;
+    g += `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${(-ang*57.3 + (r()-.5)*24).toFixed(1)}) skewX(${sk.toFixed(1)})"><rect x="${-w/2}" y="${-h/2}" width="${w.toFixed(1)}" height="${h.toFixed(1)}" fill="${col}"/></g>`;
+    // estela fina, como en "Decompose"
+    if (r() < .28){
+      const L = 40 + r() * 140;
+      g += `<line x1="${x.toFixed(1)}" y1="${y.toFixed(1)}" x2="${(x + lado*L).toFixed(1)}" y2="${(y - lado*L*t*.0 + (r()-.5)*6).toFixed(1)}" stroke="${lado<0?C.acero:C.hueso}" stroke-width=".9" stroke-opacity=".7"/>`;
+    }
+  }
+  return g;
+}
+
+/* Texto que existe en los dos mundos: mismo lugar, distinta piel a cada lado */
+function dual(x, y, txt, slt, mty, extra=""){
+  return `<text x="${x}" y="${y}" clip-path="url(#cSLT)" ${slt} ${extra}>${esc(txt)}</text>
+          <text x="${x}" y="${y}" clip-path="url(#cMTY)" ${mty} ${extra}>${esc(txt)}</text>`;
+}
+
+/* CHOQUE: una palabra, dos tipografías. Cada mitad se queda con su letra y la falla las desfasa */
+function titulo(cx, cy, sz, rot, desfase, ancho){
+  const L = `textLength="${ancho}" lengthAdjust="spacingAndGlyphs"`;
+  const a = `class="slt" font-size="${sz*1.06}" font-weight="800" fill="${C.tinta}" text-anchor="middle" filter="url(#tinta)" ${L}`;
+  const b = `class="mty" font-size="${sz}" style="font-variation-settings:'wdth' 100,'wght' 900" fill="${C.hueso}" text-anchor="middle" ${L}`;
+  return `<g transform="rotate(${rot} ${cx} ${cy})">
+    <text x="${cx}" y="${cy}" clip-path="url(#cSLT)" ${a}>${EV.titulo}</text>
+  </g>
+  <g transform="rotate(${rot} ${cx} ${cy}) translate(${desfase[0]} ${desfase[1]})">
+    <text x="${cx}" y="${cy}" clip-path="url(#cMTY)" ${b}>${EV.titulo}</text>
+  </g>`;
+}
+
+function falla(top, bot, H, sx){
+  // línea roja con un pequeño quiebre: la chispa
+  return `<line x1="${top}" y1="0" x2="${bot}" y2="${H}" stroke="${C.rojo}" stroke-width="3"/>`;
+}
+
+function mono(x, y, t, size, fill, anchor="start", extra=""){
+  return `<text class="mono" x="${x}" y="${y}" font-size="${size}" fill="${fill}" text-anchor="${anchor}" font-weight="500" ${extra}>${esc(t)}</text>`;
+}
+
+/* ============================ POST 1080×1350 ============================ */
+function post(){
+  const W = 1080, H = 1350, top = 650, bot = 430;
+  const { s, sx, r } = base(W, H, top, bot, 7);
+  let o = s;
+  const ang = Math.atan2(bot - top, H);
+
+  // etiquetas de mundo
+  o += mono(56, 70, "SLT · SALTILLO, COAH.", 17, C.tinta);
+  o += mono(W-56, 70, "MTY · MONTERREY, N.L.", 17, C.hueso, "end");
+  o += mono(56, 96, "25°25′N 101°00′W", 13, C.tinta, "start", `opacity=".7"`);
+  o += mono(W-56, 96, "25°40′N 100°18′W", 13, C.hueso, "end", `opacity=".6"`);
+
+  // bandas de Saltillo (arriba, izquierda)
+  const sltF = `class="slt" font-weight="700" fill="${C.tinta}" filter="url(#tinta)"`;
+  const sltX = `class="slt" font-weight="700" fill="${C.adobe}"`;
+  o += dual(52, 232, EV.slt[0], `${sltF} font-size="128"`, `${sltX} font-size="128"`);
+  o += dual(52, 360, EV.slt[1], `${sltF} font-size="128"`, `${sltX} font-size="128"`);
+
+  // fecha y horarios (arriba, derecha: Monterrey)
+  const fx = W - 56;
+  o += `<text class="mty" x="${fx}" y="210" text-anchor="end" font-size="64" fill="${C.hueso}" style="font-variation-settings:'wdth' 62,'wght' 800">${esc(EV.fecha)}</text>`;
+  o += mono(fx, 252, EV.anio, 18, C.rojo, "end", `font-weight="600"`);
+  o += mono(fx, 300, `PUERTAS ${EV.puertas}`, 18, C.hueso, "end");
+  o += mono(fx, 328, `BAZAR ${EV.bazar}${EV.bazarNota ? " (" + EV.bazarNota + ")" : ""}`, 18, C.hueso, "end");
+
+  // esquirlas
+  o += esquirlas(r, sx, H, 50, 400, 860, ang);
+
+  // CHOQUE cruzando la falla
+  o += titulo(540, 712, 236, -8.5, [14, 20], 980);
+
+  // bandas de Monterrey (abajo, derecha)
+  const mtyF = `class="mty" fill="${C.hueso}" style="font-variation-settings:'wdth' 62,'wght' 850"`;
+  const mtyX = `class="mty" fill="${C.acero}" style="font-variation-settings:'wdth' 62,'wght' 850"`;
+  o += dual(W-52, 932, EV.mty[0], `${mtyX} font-size="112" text-anchor="end"`, `${mtyF} font-size="112" text-anchor="end"`);
+  o += dual(W-52, 1040, EV.mty[1], `${mtyX} font-size="112" text-anchor="end"`, `${mtyF} font-size="112" text-anchor="end"`);
+
+  // lugar (abajo, izquierda: es en Saltillo)
+  o += dual(56, 1176, EV.lugar, `class="slt" font-size="58" font-weight="800" fill="${C.tinta}" filter="url(#tinta)"`, `class="slt" font-size="58" font-weight="800" fill="${C.adobe}"`);
+  o += mono(58, 1216, "Blvd. Eulalio Gutiérrez Treviño 1905", 15, C.tinta);
+  o += mono(58, 1240, "local 8 · Los Tulipanes, 25275", 15, C.tinta);
+  o += mono(58, 1264, "Saltillo, Coah.", 15, C.tinta);
+
+  o += mono(W-56, 1290, "2 BANDAS DE SLT × 2 BANDAS DE MTY", 14, C.hueso, "end", `opacity=".75"`);
+  o += falla(top, bot, H, sx);
+  // × en la falla
+  o += xMarca(sx(132), 132, 30);
+  return o + `</svg>`;
+}
+
+function xMarca(x, y, s){
+  return `<g transform="translate(${x} ${y})"><circle r="${s}" fill="${C.rojo}"/>
+    <text class="mty" y="${s*0.36}" text-anchor="middle" font-size="${s*1.15}" fill="${C.hueso}" style="font-variation-settings:'wdth' 100,'wght' 700">×</text></g>`;
+}
+
+/* ============================ STORY 1080×1920 ============================ */
+function story(){
+  const W = 1080, H = 1920, top = 690, bot = 390;
+  const { s, sx, r } = base(W, H, top, bot, 11);
+  let o = s;
+  const ang = Math.atan2(bot - top, H);
+
+  o += mono(56, 120, "SLT · SALTILLO, COAH.", 20, C.tinta);
+  o += mono(W-56, 120, "MTY · MONTERREY, N.L.", 20, C.hueso, "end");
+
+  const sltF = `class="slt" font-weight="700" fill="${C.tinta}" filter="url(#tinta)"`;
+  const sltX = `class="slt" font-weight="700" fill="${C.adobe}"`;
+  o += dual(52, 330, EV.slt[0], `${sltF} font-size="142"`, `${sltX} font-size="142"`);
+  o += dual(52, 470, EV.slt[1], `${sltF} font-size="142"`, `${sltX} font-size="142"`);
+
+  o += esquirlas(r, sx, H, 70, 540, 1110, ang);
+  o += titulo(540, 960, 250, -9, [16, 22], 990);
+
+  const mtyF = `class="mty" fill="${C.hueso}" style="font-variation-settings:'wdth' 62,'wght' 850"`;
+  const mtyX = `class="mty" fill="${C.acero}" style="font-variation-settings:'wdth' 62,'wght' 850"`;
+  o += dual(W-52, 1230, EV.mty[0], `${mtyX} font-size="122" text-anchor="end"`, `${mtyF} font-size="122" text-anchor="end"`);
+  o += dual(W-52, 1348, EV.mty[1], `${mtyX} font-size="122" text-anchor="end"`, `${mtyF} font-size="122" text-anchor="end"`);
+
+  // fecha: Monterrey, abajo derecha
+  o += `<text class="mty" x="${W-56}" y="1560" text-anchor="end" font-size="82" fill="${C.hueso}" style="font-variation-settings:'wdth' 62,'wght' 800">${esc(EV.fecha)}</text>`;
+  o += mono(W-56, 1610, `${EV.anio}`, 20, C.rojo, "end", `font-weight="600"`);
+  o += mono(W-56, 1660, `PUERTAS ${EV.puertas}`, 21, C.hueso, "end");
+  o += mono(W-56, 1694, `BAZAR ${EV.bazar}${EV.bazarNota ? " (" + EV.bazarNota + ")" : ""}`, 21, C.hueso, "end");
+
+  // lugar: Saltillo, abajo izquierda
+  o += `<text class="slt" x="56" y="1700" font-size="60" font-weight="800" fill="${C.tinta}" filter="url(#tinta)">${esc(EV.lugar).replace(" ", "</text><text class=\"slt\" x=\"56\" y=\"1760\" font-size=\"60\" font-weight=\"800\" fill=\"" + C.tinta + "\" filter=\"url(#tinta)\">")}</text>`;
+  o += mono(58, 1806, "Blvd. Eulalio Gutiérrez", 16, C.tinta);
+  o += mono(58, 1830, "Treviño 1905, local 8", 16, C.tinta);
+  o += mono(58, 1854, "Los Tulipanes · Saltillo", 16, C.tinta);
+
+  o += falla(top, bot, H, sx);
+  o += xMarca(sx(1480), 1480, 36);
+  return o + `</svg>`;
+}
+
+/* ========================= HOJA DE IDENTIDAD 1920×1200 ========================= */
+function identidad(){
+  const W = 1920, H = 1200, top = 1010, bot = 910;
+  const { s, sx, r } = base(W, H, top, bot, 21);
+  let o = s;
+  const ang = Math.atan2(bot - top, H);
+
+  o += mono(64, 72, "CHOQUE — IDENTIDAD VISUAL", 18, C.tinta, "start", `font-weight="600"`);
+  o += mono(W-64, 72, "SLT × MTY · 2026", 18, C.hueso, "end", `font-weight="600"`);
+
+  // logotipo grande
+  o += titulo(960, 340, 300, -6, [16, 20], 1300);
+  o += esquirlas(r, sx, H, 40, 140, 420, ang);
+
+  // concepto
+  const p = (x,y,t,c,a="start") => mono(x, y, t, 15, c, a);
+  o += p(64, 500, "CONCEPTO", C.tinta);
+  ["Dos escenas a 85 km de distancia se empalman sobre una falla.",
+   "Saltillo es adobe, desierto, trazo a mano. Monterrey es acero,",
+   "noche, retícula. Todo lo que cruza la línea roja cambia de mundo:",
+   "de color, de letra, o de las dos."].forEach((t,i)=> o += `<text class="slt" x="64" y="${540+i*34}" font-size="25" font-weight="400" fill="${C.tinta}">${esc(t)}</text>`);
+
+  // tipografías
+  o += p(64, 720, "TIPOGRAFÍA SLT", C.tinta);
+  o += `<text class="slt" x="64" y="800" font-size="74" font-weight="800" fill="${C.tinta}">Fraunces Itálica</text>`;
+  o += mono(64, 836, "SOFT 100 · WONK 1 · 400–800 · bandas, lugar, textos", 14, C.tinta);
+
+  o += mono(W-64, 720, "TIPOGRAFÍA MTY", 15, C.hueso, "end");
+  o += `<text class="mty" x="${W-64}" y="800" text-anchor="end" font-size="80" fill="${C.hueso}" style="font-variation-settings:'wdth' 62,'wght' 850">ARCHIVO CONDENSADA</text>`;
+  o += mono(W-64, 836, "wdth 62–125 · wght 800–900 · bandas, fecha, logotipo", 14, C.hueso, "end");
+
+  // paleta
+  const chips = [
+    ["ADOBE", "#E08A2C", C.adobe, C.tinta], ["SOMBRA", "#C8641F", C.adobe2, C.tinta], ["HUIZACHE", "#1D2B22", C.tinta, C.adobe],
+    ["ROJO", "#C0212B", C.rojo, C.hueso],
+    ["ACERO", "#0C0C0C", C.acero, C.hueso], ["HUESO", "#ECE9E2", C.hueso, C.acero],
+  ];
+  const cw = 200, gap = 18, x0 = (W - (chips.length * cw + (chips.length-1) * gap)) / 2;
+  chips.forEach((c,i) => {
+    const x = x0 + i * (cw + gap);
+    o += `<rect x="${x}" y="900" width="${cw}" height="150" fill="${c[2]}" stroke="${C.hueso}" stroke-opacity="${c[2]===C.acero?.35:0}"/>`;
+    o += mono(x+14, 1022, c[0], 14, c[3], "start", `font-weight="600"`);
+    o += mono(x+14, 1040, c[1], 13, c[3]);
+  });
+
+  o += mono(64, 1140, "MONO · IBM PLEX MONO — horarios, dirección, coordenadas", 14, C.tinta);
+  o += mono(W-64, 1140, "REGLA: la falla es roja, diagonal y nunca vertical", 14, C.hueso, "end");
+  o += falla(top, bot, H, sx);
+  return o + `</svg>`;
+}
+
+/* ========================= AVATAR / CUADRO 1080×1080 ========================= */
+function cuadro(){
+  const W = 1080, H = 1080, top = 640, bot = 440;
+  const { s, sx, r } = base(W, H, top, bot, 5);
+  let o = s;
+  const ang = Math.atan2(bot - top, H);
+  o += esquirlas(r, sx, H, 55, 260, 820, ang);
+  o += titulo(540, 600, 250, -8.5, [14, 20], 980);
+  o += mono(64, 90, "SLT", 30, C.tinta, "start", `font-weight="600"`);
+  o += mono(W-64, 90, "MTY", 30, C.hueso, "end", `font-weight="600"`);
+  o += mono(64, H-64, "SALTILLO, COAH.", 18, C.tinta);
+  o += mono(W-64, H-64, EV.fecha, 18, C.hueso, "end");
+  o += falla(top, bot, H, sx);
+  o += xMarca(sx(90), 90, 30);
+  return o + `</svg>`;
+}
+
+const F = { post, story, identidad, cuadro };
+document.fonts.load('800 italic 40px "Fraunces"').then(() => document.fonts.ready).then(() => {
+  document.getElementById("lienzo").innerHTML = (F[formato] || post)();
+  document.body.dataset.listo = "1";
+});
+</script>
+</body>
+</html>

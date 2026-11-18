@@ -1,3 +1,4 @@
 capturas/
 *.png
 !assets/**/*.png
+!eventos/**/export/*.png
